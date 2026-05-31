@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"templrpress/internal/banner"
 	"templrpress/internal/config"
 	"templrpress/internal/server"
 )
@@ -111,7 +112,7 @@ func runServe(args []string) error {
 		return err
 	}
 
-	fmt.Printf("templrpress %s — config: %s\n", Version, source)
+	banner.Print(cfg, Version, source)
 	return srv.Run()
 }
 
