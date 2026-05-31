@@ -2,11 +2,14 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"runtime"
 	"strings"
 	"time"
+
+	"gopkg.in/yaml.v3"
 
 	"templrpress/internal/cms"
 	"templrpress/internal/config"
@@ -87,18 +90,18 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 	}
 
 	branding := map[string]any{
-		"app_name":         s.cfg.Site.Name,
-		"page_title":       s.cfg.Site.Title,
-		"page_description": s.cfg.Site.Description,
-		"logo_mark":        firstNonEmpty(b.LogoText, s.cfg.Site.Name),
-		"logo_url":         b.LogoURL,
-		"logo_dark_url":    b.LogoDarkURL,
-		"favicon_url":      firstNonEmpty(b.FaviconURL, "/static/favicon.svg"),
-		"github_url":       b.GitHubURL,
-		"navigation":       nav,
-		"hero_title":       firstNonEmpty(b.HeroHeading, s.cfg.Site.Title),
-		"hero_tagline":     b.HeroTagline,
-		"hero_image_url":   "",
+		"app_name":          s.cfg.Site.Name,
+		"page_title":        s.cfg.Site.Title,
+		"page_description":  s.cfg.Site.Description,
+		"logo_mark":         firstNonEmpty(b.LogoText, s.cfg.Site.Name),
+		"logo_url":          b.LogoURL,
+		"logo_dark_url":     b.LogoDarkURL,
+		"favicon_url":       firstNonEmpty(b.FaviconURL, "/static/favicon.svg"),
+		"github_url":        b.GitHubURL,
+		"navigation":        nav,
+		"hero_title":        firstNonEmpty(b.HeroHeading, s.cfg.Site.Title),
+		"hero_tagline":      b.HeroTagline,
+		"hero_image_url":    "",
 		"service_endpoints": []any{},
 
 		"hero_badge":              b.HeroBadge,
@@ -122,41 +125,128 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleConfigServers(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
-		"opensearch_servers": []any{},
-		"mongodb_servers":    []any{},
-		"postgres_servers":   []any{},
-		"mysql_servers":      []any{},
+		"opensearch_servers":  []any{},
+		"mongodb_servers":     []any{},
+		"postgres_servers":    []any{},
+		"mysql_servers":       []any{},
 		"openobserve_servers": []any{},
 	})
 }
 
 func (s *Server) handleOpenAPISpecsList(w http.ResponseWriter, r *http.Request) {
-	items := []map[string]any{
-		{"name": "_builtin", "description": firstNonEmpty(s.cfg.APIDocs.Title, "Built-in API"), "default": true},
+	hasUserDefault := false
+	for _, e := range s.cfg.OpenAPISpecs {
+		if e.IsDefault {
+			hasUserDefault = true
+			break
+		}
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"items": items})
+	items := []map[string]any{
+		{
+			"name":        "_builtin",
+			"description": firstNonEmpty(s.cfg.APIDocs.Title, "TemplrPress API"),
+			"default":     !hasUserDefault,
+		},
+	}
+	for _, e := range s.cfg.OpenAPISpecs {
+		if e.Name == "" || e.URL == "" {
+			continue
+		}
+		items = append(items, map[string]any{
+			"name":        e.Name,
+			"description": e.Description,
+			"default":     e.IsDefault,
+		})
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"items": items, "total": len(items)})
 }
 
-// handleOpenAPISpec serves the embedded /static/openapi.yaml as JSON-friendly text.
+// handleOpenAPISpec serves an OpenAPI document as JSON. ?spec=<name> selects
+// from the registry; missing/_builtin returns the embedded TemplrPress spec.
+// YAML files are unmarshalled and re-emitted as JSON so the SPA's react-query
+// client (which always calls res.json()) can consume the response.
 func (s *Server) handleOpenAPISpec(w http.ResponseWriter, r *http.Request) {
 	staticSub, err := fs.Sub(s.assets.Static, "static")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	data, err := fs.ReadFile(staticSub, "openapi.yaml")
-	if err != nil {
-		// try .json
-		if d, e := fs.ReadFile(staticSub, "openapi.json"); e == nil {
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write(d)
+
+	specName := r.URL.Query().Get("spec")
+	if specName == "" || specName == "_builtin" {
+		s.serveBuiltinSpec(w, staticSub)
+		return
+	}
+
+	for _, e := range s.cfg.OpenAPISpecs {
+		if e.Name != specName {
+			continue
+		}
+		rel := strings.TrimPrefix(e.URL, "/")
+		rel = strings.TrimPrefix(rel, "static/")
+		data, err := fs.ReadFile(staticSub, rel)
+		if err != nil {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "spec file not found", "reason": err.Error()})
 			return
 		}
+		s.writeSpecAsJSON(w, rel, data)
+		return
+	}
+	writeJSON(w, http.StatusNotFound, map[string]string{"error": "unknown spec", "reason": "name not in registry: " + specName})
+}
+
+func (s *Server) serveBuiltinSpec(w http.ResponseWriter, staticSub fs.FS) {
+	if d, e := fs.ReadFile(staticSub, "openapi.json"); e == nil {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(d)
+		return
+	}
+	data, err := fs.ReadFile(staticSub, "openapi.yaml")
+	if err != nil {
 		http.Error(w, "openapi spec not found", http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "application/yaml")
-	_, _ = w.Write(data)
+	s.writeSpecAsJSON(w, "openapi.yaml", data)
+}
+
+func (s *Server) writeSpecAsJSON(w http.ResponseWriter, rel string, data []byte) {
+	low := strings.ToLower(rel)
+	if strings.HasSuffix(low, ".json") {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(data)
+		return
+	}
+	var doc any
+	if err := yaml.Unmarshal(data, &doc); err != nil {
+		http.Error(w, "openapi spec parse: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, http.StatusOK, normalizeYAMLForJSON(doc))
+}
+
+// normalizeYAMLForJSON walks a value decoded from YAML and converts
+// map[interface{}]interface{} into map[string]any so encoding/json can
+// marshal it without error.
+func normalizeYAMLForJSON(v any) any {
+	switch x := v.(type) {
+	case map[any]any:
+		m := make(map[string]any, len(x))
+		for k, val := range x {
+			m[fmt.Sprint(k)] = normalizeYAMLForJSON(val)
+		}
+		return m
+	case map[string]any:
+		for k, val := range x {
+			x[k] = normalizeYAMLForJSON(val)
+		}
+		return x
+	case []any:
+		for i, val := range x {
+			x[i] = normalizeYAMLForJSON(val)
+		}
+		return x
+	}
+	return v
 }
 
 // ---- CMS ------------------------------------------------------------------

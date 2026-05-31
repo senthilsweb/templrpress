@@ -1,14 +1,31 @@
 openapi: 3.0.3
 info:
   title: TemplrPress API
-  version: 0.1.0
+  version: 0.2.0
   description: |
-    Public HTTP surface of a running TemplrPress instance.
+    HTTP surface of a running TemplrPress instance. The single binary serves
+    both the embedded Next.js SPA (at `/`) and a small JSON API (under
+    `/api/...`) used by the SPA and external integrators.
+  license:
+    name: Apache-2.0
+
 servers:
   - url: http://localhost:5000
+
+tags:
+  - name: Health
+    description: Liveness, readiness, build metadata.
+  - name: Config
+    description: Branding, navigation, datasource stubs.
+  - name: OpenAPI
+    description: OpenAPI spec registry — the source for this very page.
+  - name: CMS
+    description: Markdown-backed articles (docs, blog, about).
+
 paths:
   /healthz:
     get:
+      tags: [Health]
       summary: Liveness probe
       responses:
         "200":
@@ -19,47 +36,232 @@ paths:
                 type: object
                 properties:
                   status:  { type: string, example: ok }
-                  version: { type: string, example: "0.1.0" }
+                  version: { type: string, example: "0.2.0" }
                   time:    { type: string, format: date-time }
-  /:
+  /readyz:
     get:
-      summary: Landing page (HTML)
-      responses: { "200": { description: HTML } }
-  /about:
+      tags: [Health]
+      summary: Readiness probe
+      responses:
+        "200":
+          description: Server is ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { ready: { type: boolean, example: true } }
+  /api/version:
     get:
-      summary: About page (HTML)
-      responses: { "200": { description: HTML } }
-  /docs:
+      tags: [Health]
+      summary: Build metadata
+      responses:
+        "200":
+          description: Version info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:   { type: string, example: "0.2.0" }
+                  go:        { type: string, example: "go1.21.0" }
+                  os:        { type: string, example: "darwin" }
+                  arch:      { type: string, example: "arm64" }
+                  site_name: { type: string, example: "TemplrPress" }
+                  external:  { type: boolean, example: false }
+
+  /api/config/branding:
     get:
-      summary: Docs index — redirects to first article
-      responses: { "302": { description: Redirect } }
-  /docs/{slug}:
+      tags: [Config]
+      summary: Branding + nav
+      description: Returns the branding payload consumed by the SPA — site name,
+        title, hero copy, navigation tree, footer credit, etc.
+      responses:
+        "200":
+          description: Branding object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  branding:
+                    type: object
+                    additionalProperties: true
+  /api/config/servers:
     get:
-      summary: Render a documentation page
+      tags: [Config]
+      summary: Datasource stubs
+      description: Empty arrays in the OSS build; preserved for templrgo-shaped clients.
+      responses:
+        "200":
+          description: Server lists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  opensearch_servers:  { type: array, items: { type: object } }
+                  mongodb_servers:     { type: array, items: { type: object } }
+                  postgres_servers:    { type: array, items: { type: object } }
+                  mysql_servers:       { type: array, items: { type: object } }
+                  openobserve_servers: { type: array, items: { type: object } }
+
+  /api/config/openapi-specs:
+    get:
+      tags: [OpenAPI]
+      summary: Registered OpenAPI specs
+      responses:
+        "200":
+          description: Spec registry
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:        { type: string, example: _builtin }
+                        description: { type: string, example: "TemplrPress API" }
+                        default:     { type: boolean }
+  /api/openapi-spec:
+    get:
+      tags: [OpenAPI]
+      summary: Fetch one OpenAPI spec
+      parameters:
+        - in: query
+          name: spec
+          required: false
+          schema: { type: string }
+          description: Spec name from `/api/config/openapi-specs`. Omit or use `_builtin` for the built-in spec.
+      responses:
+        "200":
+          description: OpenAPI document (JSON)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "404":
+          description: Unknown spec name
+
+  /api/cms/docs/nav:
+    get:
+      tags: [CMS]
+      summary: Sidebar navigation tree for /docs
+      responses:
+        "200":
+          description: Sections + flat order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        folder: { type: string, example: "01-getting-started" }
+                        label:  { type: string, example: "Getting Started" }
+                        items:
+                          type: array
+                          items: { $ref: "#/components/schemas/NavItem" }
+                  rootItems:
+                    type: array
+                    items: { $ref: "#/components/schemas/NavItem" }
+                  flatOrder:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        folder: { type: string }
+                        slug:   { type: string }
+  /api/cms/list:
+    get:
+      tags: [CMS]
+      summary: List articles in a folder
+      parameters:
+        - in: query
+          name: type
+          schema: { type: string, default: docs, example: docs }
+          description: Top-level folder under `content/` (e.g. `docs`, `blog`, `about`).
+      responses:
+        "200":
+          description: Article list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  articles:
+                    type: array
+                    items: { $ref: "#/components/schemas/Frontmatter" }
+  /api/cms/{folder}/{slug}:
+    get:
+      tags: [CMS]
+      summary: Render a single article
+      parameters:
+        - in: path
+          name: folder
+          required: true
+          schema: { type: string, example: docs }
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string, example: welcome }
+      responses:
+        "200":
+          description: Article with rendered HTML
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Article" }
+        "404": { description: Not found }
+  /api/cms/about/{slug}:
+    get:
+      tags: [CMS]
+      summary: Render an about-page article
       parameters:
         - in: path
           name: slug
           required: true
-          schema: { type: string }
+          schema: { type: string, example: about }
       responses:
-        "200": { description: HTML }
-        "404": { description: Not found }
-  /blog:
-    get:
-      summary: Blog index (only when blog.enabled = true)
-      responses: { "200": { description: HTML } }
-  /blog/{slug}:
-    get:
-      summary: Blog post
-      parameters:
-        - in: path
-          name: slug
-          required: true
-          schema: { type: string }
-      responses:
-        "200": { description: HTML }
-        "404": { description: Not found }
-  /api-docs:
-    get:
-      summary: Interactive API reference (Swagger UI)
-      responses: { "200": { description: HTML } }
+        "200":
+          description: Article
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Article" }
+
+components:
+  schemas:
+    NavItem:
+      type: object
+      properties:
+        title:       { type: string }
+        slug:        { type: string }
+        description: { type: string }
+        folder:      { type: string }
+        sortOrder:   { type: integer }
+    Frontmatter:
+      type: object
+      properties:
+        title:       { type: string }
+        slug:        { type: string }
+        description: { type: string }
+        date:        { type: string, format: date-time }
+        author:      { type: string }
+        type:        { type: string }
+        category:    { type: string }
+        tags:        { type: array, items: { type: string } }
+        coverImage:  { type: string }
+        folder:      { type: string }
+        url:         { type: string }
+        sortOrder:   { type: integer }
+    Article:
+      type: object
+      properties:
+        frontmatter: { $ref: "#/components/schemas/Frontmatter" }
+        content:     { type: string, description: "Raw markdown body" }
+        html:        { type: string, description: "Rendered HTML" }

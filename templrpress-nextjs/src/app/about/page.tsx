@@ -103,9 +103,17 @@ export default function AboutPage() {
   }
 
   // --- List view ---
-  // If only one profile, auto-redirect
-  if (profiles.length === 1) {
-    window.location.href = `/about/${profiles[0].slug}`;
+  // If only one profile, fetch it inline at /about (no /about/<slug> redirect).
+  if (profiles.length === 1 && !article) {
+    const only = profiles[0];
+    if (typeof window !== "undefined") {
+      fetch(`/api/cms/about/${only.slug}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data: AboutArticle | null) => {
+          if (data) setArticle(data);
+        })
+        .catch(() => {});
+    }
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-[var(--tg-primary)]" />

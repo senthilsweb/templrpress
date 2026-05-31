@@ -906,7 +906,7 @@ function RestApiSpecPageInner() {
   const activeSpecEntry = specList?.items.find((s) => s.name === activeSpecName);
   const activeSpecDescription = activeSpecEntry?.description?.trim() ?? "";
   const activeSpecDisplayName =
-    activeSpecName === "_builtin" ? "templrgo" : activeSpecName;
+    activeSpecName === "_builtin" ? "templrpress" : activeSpecName;
   const activeSpecLabel = activeSpecDescription || activeSpecDisplayName;
 
   const overrideBadge = overlayActive ? (
@@ -1024,7 +1024,7 @@ function RestApiSpecPageInner() {
                   </SelectTrigger>
                   <SelectContent>
                     {specList!.items.map((s) => {
-                      const displayName = s.name === "_builtin" ? "templrgo" : s.name;
+                      const displayName = s.name === "_builtin" ? "templrpress" : s.name;
                       return (
                       <SelectItem key={s.name} value={s.name} className="text-xs">
                         <div className="flex flex-col">

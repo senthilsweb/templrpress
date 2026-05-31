@@ -9,14 +9,25 @@ import (
 
 // Config is the root configuration loaded from YAML.
 type Config struct {
-	Site     SiteConfig     `yaml:"site"`
-	Server   ServerConfig   `yaml:"server"`
-	Branding BrandingConfig `yaml:"branding"`
-	Content  ContentConfig  `yaml:"content"`
-	Blog     BlogConfig     `yaml:"blog"`
-	APIDocs  APIDocsConfig  `yaml:"api_docs"`
-	Footer   FooterConfig   `yaml:"footer"`
-	Nav      []NavItem      `yaml:"navigation"`
+	Site         SiteConfig         `yaml:"site"`
+	Server       ServerConfig       `yaml:"server"`
+	Branding     BrandingConfig     `yaml:"branding"`
+	Content      ContentConfig      `yaml:"content"`
+	Blog         BlogConfig         `yaml:"blog"`
+	APIDocs      APIDocsConfig      `yaml:"api_docs"`
+	OpenAPISpecs []OpenAPISpecEntry `yaml:"openapi_specs"`
+	Footer       FooterConfig       `yaml:"footer"`
+	Nav          []NavItem          `yaml:"navigation"`
+}
+
+// OpenAPISpecEntry registers an additional OpenAPI document available in
+// the /rest-api-spec viewer's dropdown. URL is a /static/... path bundled
+// with the binary (http(s):// is not supported in the OSS build).
+type OpenAPISpecEntry struct {
+	Name        string `yaml:"name"`
+	URL         string `yaml:"url"`
+	Description string `yaml:"description"`
+	IsDefault   bool   `yaml:"is_default"`
 }
 
 type SiteConfig struct {
