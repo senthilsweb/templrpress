@@ -15,3 +15,11 @@ coverage.*
 .vscode/
 .idea/
 .DS_Store
+
+# Next.js (SPA)
+templrpress-nextjs/node_modules/
+templrpress-nextjs/.next/
+templrpress-nextjs/out/*
+!templrpress-nextjs/out/.gitkeep
+templrpress-nextjs/tsconfig.tsbuildinfo
+templrpress-nextjs/next-env.d.ts
