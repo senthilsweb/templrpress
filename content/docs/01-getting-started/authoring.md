@@ -2,8 +2,8 @@
 title: Authoring content
 slug: authoring
 description: Markdown frontmatter and folder conventions.
-category: Guides
-sort_order: 20
+category: Getting Started
+sort_order: 25
 published: true
 ---
 

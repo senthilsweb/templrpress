@@ -2,8 +2,8 @@
 title: Deployment
 slug: deployment
 description: Run TemplrPress as a single binary or Docker container.
-category: Guides
-sort_order: 30
+category: Getting Started
+sort_order: 40
 published: true
 ---
 

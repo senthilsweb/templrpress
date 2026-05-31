@@ -26,7 +26,7 @@ const DARK_MODE_STORAGE_KEY = "darkMode";
 const TITLE_FONT_STORAGE_KEY = "titleFont";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeName>("sunrise");
+  const [theme, setThemeState] = useState<ThemeName>("navy");
   const [darkMode, setDarkMode] = useState(false);
   const [titleFont, setTitleFontState] = useState<TitleFontName>("default");
   const [mounted, setMounted] = useState(false);

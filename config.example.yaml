@@ -31,7 +31,10 @@ branding:
 
 content:
   # source: "./content"        # External markdown directory; empty = use embedded.
-  docs_root: "docs"
+  docs_root: "docs"            # Subfolder under content/ for docs pages.
+                               # Switch to "docs-empty" to suppress the bundled
+                               # TemplrPress documentation and ship a blank
+                               # canvas (see content/docs-empty/).
   about_file: "about.md"
 
 blog:
@@ -42,7 +45,20 @@ blog:
 api_docs:
   enabled: true
   spec_url: "/static/openapi.yaml"  # Path to OpenAPI/Swagger spec (relative or http(s)).
-  title: "API Reference"
+  title: "TemplrPress API"
+
+# OpenAPI / Swagger spec registry.
+# Register additional specs to be shown in the /rest-api-spec viewer's
+# dropdown alongside the built-in TemplrPress spec. Each entry needs a
+# unique `name` and a `url` pointing to a file bundled under /static/...
+# (the OSS build does not fetch remote URLs). Both JSON and YAML files
+# are supported; the server transparently re-emits YAML as JSON for the
+# SPA. The synthetic `_builtin` entry is shown first by default.
+openapi_specs:
+  - name: petstore
+    url: /static/openapi/petstore.json
+    description: "Demo · Swagger Petstore"
+    is_default: false
 
 footer:
   enabled: true
@@ -84,7 +100,7 @@ navigation:
     icon: "pen-line"
     enabled: false              # flip when blog.enabled = true
   - label: "API"
-    url: "/api-docs"
+    url: "/rest-api-spec"
     icon: "code"
   - label: "About"
     url: "/about"
