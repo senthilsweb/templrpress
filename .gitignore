@@ -1,0 +1,17 @@
+# Binary
+templrpress
+templrpress.exe
+/bin/
+
+# Local config (don't ship secrets)
+/config.yaml
+
+# Go build artifacts
+*.test
+*.out
+coverage.*
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

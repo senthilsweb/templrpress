@@ -1,0 +1,19 @@
+services:
+  templrpress:
+    image: ghcr.io/senthilsweb/templrpress:latest
+    build:
+      context: .
+      args:
+        VERSION: dev
+    container_name: templrpress
+    ports:
+      - "5000:5000"
+    environment:
+      TEMPLRPRESS_HOST: "0.0.0.0"
+      TEMPLRPRESS_PORT: "5000"
+      # TEMPLRPRESS_CONFIG: "/app/config.yaml"
+    volumes:
+      # Mount your own config.yaml + content folder to override the embedded ones.
+      - ./config.yaml:/app/config.yaml:ro
+      - ./content:/app/content:ro
+    restart: unless-stopped

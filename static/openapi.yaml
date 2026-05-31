@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: TemplrPress API
+  version: 0.1.0
+  description: |
+    Public HTTP surface of a running TemplrPress instance.
+servers:
+  - url: http://localhost:5000
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe
+      responses:
+        "200":
+          description: Server is up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:  { type: string, example: ok }
+                  version: { type: string, example: "0.1.0" }
+                  time:    { type: string, format: date-time }
+  /:
+    get:
+      summary: Landing page (HTML)
+      responses: { "200": { description: HTML } }
+  /about:
+    get:
+      summary: About page (HTML)
+      responses: { "200": { description: HTML } }
+  /docs:
+    get:
+      summary: Docs index — redirects to first article
+      responses: { "302": { description: Redirect } }
+  /docs/{slug}:
+    get:
+      summary: Render a documentation page
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: HTML }
+        "404": { description: Not found }
+  /blog:
+    get:
+      summary: Blog index (only when blog.enabled = true)
+      responses: { "200": { description: HTML } }
+  /blog/{slug}:
+    get:
+      summary: Blog post
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: HTML }
+        "404": { description: Not found }
+  /api-docs:
+    get:
+      summary: Interactive API reference (Swagger UI)
+      responses: { "200": { description: HTML } }
