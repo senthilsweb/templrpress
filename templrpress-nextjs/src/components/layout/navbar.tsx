@@ -213,6 +213,25 @@ function DarkModeToggle() {
   );
 }
 
+function MobileThemeToggle() {
+  const { darkMode, toggleDarkMode } = useTheme();
+  const Icon = darkMode ? Moon : Sun;
+  return (
+    <button
+      type="button"
+      onClick={toggleDarkMode}
+      className="flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+      aria-label="Toggle dark mode"
+    >
+      <span className="flex items-center gap-2">
+        <Icon className="h-4 w-4" />
+        {darkMode ? "Dark mode" : "Light mode"}
+      </span>
+      <span className="text-xs text-muted-foreground">{darkMode ? "On" : "Off"}</span>
+    </button>
+  );
+}
+
 function ChatNavButton() {
   return null;
 }
@@ -714,9 +733,9 @@ export function Navbar() {
                       GitHub
                     </a>
                   )}
+                  <MobileThemeToggle />
                   <div className="mt-3 flex items-center justify-end gap-2 px-3">
                     <ChatNavButton />
-                    <DarkModeToggle />
                   </div>
                 </div>
               </div>

@@ -27,9 +27,15 @@ export function Footer() {
   const showColumns = columns.length > 0;
 
   return (
-    <footer className="border-t border-border bg-background">
+    <footer
+      className="relative border-t border-border bg-gradient-to-b from-muted/40 via-muted/10 to-background"
+      style={{
+        backgroundImage:
+          "radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--tg-primary) 8%, transparent) 0%, transparent 60%), linear-gradient(to bottom, color-mix(in srgb, var(--muted) 60%, transparent), transparent 70%)",
+      }}
+    >
       {showCTA && (
-        <div className="border-b border-border">
+        <div>
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 py-12 sm:flex-row">
             <div>
               {ctaTagline && (
@@ -94,7 +100,7 @@ export function Footer() {
         </div>
       )}
 
-      <div className="border-t border-border">
+      <div>
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-6 text-sm text-muted-foreground sm:flex-row">
           <p>
             © {year} {appName}. All rights reserved.
