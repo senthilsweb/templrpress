@@ -1,0 +1,91 @@
+# TemplrPress configuration
+# Copy this file to config.yaml and customise.
+
+site:
+  name: "TemplrPress"
+  title: "TemplrPress — Lightweight Markdown Site"
+  description: "A single-binary, config-driven markdown publishing platform."
+  url: "https://example.com"
+
+server:
+  host: "0.0.0.0"
+  port: 5000
+
+branding:
+  logo_text: "TemplrPress"
+  # logo_url: "/static/logo.svg"
+  # logo_dark_url: "/static/logo-dark.svg"
+  # favicon_url: "/static/favicon.svg"
+  github_url: "https://github.com/senthilsweb/templrpress"
+  primary_hex: "#1e40af"
+
+  hero_badge: "Lightweight CMS"
+  hero_heading: "Publish content"
+  hero_heading_highlight: "fast"
+  hero_heading_suffix: "with one binary"
+  hero_tagline: "Markdown-driven landing page, docs, blog, and API reference. No build step. No database. Just config."
+  hero_cta_primary_text: "Read the docs"
+  hero_cta_primary_url: "/docs"
+  hero_cta_secondary_text: "View Blog"
+  hero_cta_secondary_url: "/blog"
+
+content:
+  # source: "./content"        # External markdown directory; empty = use embedded.
+  docs_root: "docs"
+  about_file: "about.md"
+
+blog:
+  enabled: false               # Hidden by default — flip to true to expose /blog.
+  root: "blog"
+  page_size: 10
+
+api_docs:
+  enabled: true
+  spec_url: "/static/openapi.yaml"  # Path to OpenAPI/Swagger spec (relative or http(s)).
+  title: "API Reference"
+
+footer:
+  enabled: true
+  tagline: "A single-binary markdown publishing platform."
+  credit_prefix: "Built with"
+  credit_text: "TemplrPress"
+  credit_url: "https://github.com/senthilsweb/templrpress"
+  cta_tagline: "Ready to publish?"
+  cta_primary: "Ship your site."
+  cta_secondary: "In one binary."
+  cta_button_text: "Get started"
+  cta_button_url: "/docs"
+  columns:
+    - title: "Product"
+      links:
+        - { label: "Docs",     url: "/docs" }
+        - { label: "API",      url: "/api-docs" }
+        - { label: "About",    url: "/about" }
+    - title: "Resources"
+      links:
+        - { label: "Health",       url: "/healthz" }
+        - { label: "Readiness",    url: "/readyz" }
+        - { label: "Version",      url: "/api/version" }
+    - title: "Project"
+      links:
+        - { label: "GitHub",  url: "https://github.com/senthilsweb/templrpress", external: true }
+        - { label: "Issues",  url: "https://github.com/senthilsweb/templrpress/issues", external: true }
+        - { label: "License", url: "https://github.com/senthilsweb/templrpress/blob/main/LICENSE", external: true }
+
+# Top navigation. Children create a hover-flyout. Items with `enabled: false`
+# are hidden. Set blog/api items to `enabled: false` to remove from nav even
+# when the route itself stays enabled.
+navigation:
+  - label: "Docs"
+    url: "/docs"
+    icon: "book-open"
+  - label: "Blog"
+    url: "/blog"
+    icon: "pen-line"
+    enabled: false              # flip when blog.enabled = true
+  - label: "API"
+    url: "/api-docs"
+    icon: "code"
+  - label: "About"
+    url: "/about"
+    icon: "info"

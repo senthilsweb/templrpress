@@ -1,0 +1,38 @@
+{{define "page_title"}}{{if .Article}}{{.Article.Title}} — {{end}}Docs — {{.Site.Title}}{{end}}
+{{define "content"}}
+<div class="mx-auto flex max-w-7xl gap-8 px-4 py-10 sm:px-6">
+  <aside class="sticky top-20 hidden h-[calc(100vh-6rem)] w-64 shrink-0 overflow-y-auto pr-4 lg:block">
+    <nav class="space-y-6 text-sm">
+      {{range .Groups}}
+      <div>
+        <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{.Title}}</h3>
+        <ul class="space-y-1">
+          {{range .Articles}}
+            <li>
+              <a href="/docs/{{.Slug}}" class="block rounded-md px-3 py-1.5 transition
+                {{if eq $.Path (printf "/docs/%s" .Slug)}}bg-slate-100 font-semibold text-slate-900 dark:bg-slate-800 dark:text-white{{else}}text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white{{end}}">
+                {{.Title}}
+              </a>
+            </li>
+          {{end}}
+        </ul>
+      </div>
+      {{end}}
+    </nav>
+  </aside>
+
+  <article class="min-w-0 flex-1">
+    {{if .Article}}
+      <header class="mb-8 border-b border-slate-200 pb-6 dark:border-slate-800">
+        {{if .Article.Category}}<p class="mb-1 text-sm font-medium" style="color: var(--tg-primary)">{{.Article.Category}}</p>{{end}}
+        <h1 class="text-4xl font-bold tracking-tight">{{.Article.Title}}</h1>
+        {{if .Article.Description}}<p class="mt-2 text-lg text-slate-600 dark:text-slate-400">{{.Article.Description}}</p>{{end}}
+      </header>
+      <div class="prose prose-slate dark:prose-invert max-w-none">{{safeHTML .Article.HTML}}</div>
+    {{else}}
+      <h1 class="text-3xl font-bold">Documentation</h1>
+      <p class="mt-4 text-slate-600 dark:text-slate-400">No documents found. Add markdown files under <code>content/docs/</code>.</p>
+    {{end}}
+  </article>
+</div>
+{{end}}
