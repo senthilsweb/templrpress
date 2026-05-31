@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	TemplatesFS   embed.FS
+	SPAFS         embed.FS
 	StaticFS      embed.FS
 	ContentFS     embed.FS
 	ConfigExample []byte
@@ -102,10 +102,10 @@ func runServe(args []string) error {
 	}
 
 	srv, err := server.New(cfg, server.Assets{
-		Templates: TemplatesFS,
-		Static:    StaticFS,
-		Content:   ContentFS,
-		Version:   Version,
+		SPA:     SPAFS,
+		Static:  StaticFS,
+		Content: ContentFS,
+		Version: Version,
 	})
 	if err != nil {
 		return err

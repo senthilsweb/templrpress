@@ -3,11 +3,9 @@ package server
 import (
 	"embed"
 	"fmt"
-	"html/template"
 	"io/fs"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"templrpress/internal/cms"
@@ -15,35 +13,28 @@ import (
 )
 
 type Assets struct {
-	Templates embed.FS
-	Static    embed.FS
-	Content   embed.FS
-	Version   string
+	SPA     embed.FS
+	Static  embed.FS
+	Content embed.FS
+	Version string
 }
 
 type Server struct {
 	cfg    *config.Config
 	assets Assets
-	tpl    *template.Template
 	loader *cms.Loader
-
-	tplMu    sync.Mutex
-	tplCache map[string]*templateBundle
+	spaSub fs.FS
 }
 
 func New(cfg *config.Config, assets Assets) (*Server, error) {
-	tpl, err := loadTemplates(assets.Templates)
-	if err != nil {
-		return nil, fmt.Errorf("templates: %w", err)
-	}
 	loader := cms.New(assets.Content, "content", cfg.Content.Source)
-	return &Server{
-		cfg:      cfg,
-		assets:   assets,
-		tpl:      tpl,
-		loader:   loader,
-		tplCache: map[string]*templateBundle{},
-	}, nil
+
+	// SPA root: templrpress-nextjs/out (static export)
+	spaSub, err := fs.Sub(assets.SPA, "templrpress-nextjs/out")
+	if err != nil {
+		return nil, fmt.Errorf("spa subFS: %w", err)
+	}
+	return &Server{cfg: cfg, assets: assets, loader: loader, spaSub: spaSub}, nil
 }
 
 func (s *Server) Run() error {
@@ -55,7 +46,7 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) routes(mux *http.ServeMux) {
-	// static files (embedded /static/*)
+	// embedded /static/* (favicon, openapi spec, etc.)
 	staticSub, _ := fs.Sub(s.assets.Static, "static")
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticSub))))
 
@@ -64,156 +55,89 @@ func (s *Server) routes(mux *http.ServeMux) {
 	mux.HandleFunc("/readyz", s.handleReadyz)
 	mux.HandleFunc("/api/version", s.handleVersion)
 
-	// CMS JSON API
-	mux.HandleFunc("/api/cms/articles", s.handleArticlesList)
-	mux.HandleFunc("/api/cms/article/", s.handleArticleGet)
-	mux.HandleFunc("/api/cms/sections", s.handleSections)
+	// auth stubs
+	mux.HandleFunc("/api/auth/status", s.handleAuthStatus)
+	mux.HandleFunc("/api/auth/logout", s.handleAuthLogout)
 
-	// pages
-	mux.HandleFunc("/", s.handleRoot)
-	mux.HandleFunc("/about", s.handleAbout)
-	mux.HandleFunc("/settings", s.handleSettings)
-	mux.HandleFunc("/docs", s.handleDocsIndex)
-	mux.HandleFunc("/docs/", s.handleDoc)
+	// config
+	mux.HandleFunc("/api/config/branding", s.handleConfigBranding)
+	mux.HandleFunc("/api/config/servers", s.handleConfigServers)
+	mux.HandleFunc("/api/config/openapi-specs", s.handleOpenAPISpecsList)
+	mux.HandleFunc("/api/openapi-spec", s.handleOpenAPISpec)
 
-	if s.cfg.Blog.Enabled {
-		mux.HandleFunc("/blog", s.handleBlogIndex)
-		mux.HandleFunc("/blog/", s.handleBlogPost)
-	}
-	if s.cfg.APIDocs.Enabled {
-		mux.HandleFunc("/api-docs", s.handleAPIDocs)
-	}
+	// CMS
+	mux.HandleFunc("/api/cms/docs/nav", s.handleDocsNav)
+	mux.HandleFunc("/api/cms/list", s.handleCMSList)
+	mux.HandleFunc("/api/cms/about/", s.handleAboutGet)
+	// /api/cms/{folder}/{slug} or /api/cms/{slug}
+	mux.HandleFunc("/api/cms/", s.handleCMSArticle)
+
+	// SPA (must be last; "/" matches everything not above)
+	mux.Handle("/", s.spaHandler())
 }
 
-func (s *Server) handleRoot(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		s.notFound(w, r)
-		return
-	}
-	s.render(w, r, "landing.html", map[string]any{})
-}
-
-func (s *Server) handleAbout(w http.ResponseWriter, r *http.Request) {
-	a, err := s.loader.GetByPath(s.cfg.Content.AboutFile)
-	if err != nil {
-		s.notFound(w, r)
-		return
-	}
-	s.render(w, r, "about.html", map[string]any{"Article": a})
-}
-
-func (s *Server) handleDocsIndex(w http.ResponseWriter, r *http.Request) {
-	docs, _ := s.loader.InFolder(s.cfg.Content.DocsRoot)
-	groups := groupBySection(docs)
-	// Redirect to first doc if any
-	if len(docs) > 0 {
-		http.Redirect(w, r, "/docs/"+docs[0].Slug+pathFromSection(docs[0]), http.StatusFound)
-		return
-	}
-	s.render(w, r, "docs.html", map[string]any{
-		"Groups":  groups,
-		"Article": nil,
+// spaHandler serves files from the embedded Next.js export. For directory
+// routes (e.g. /docs/) it returns the matching index.html. Unknown paths
+// fall back to /404.html when present, otherwise a plain 404.
+func (s *Server) spaHandler() http.Handler {
+	fileServer := http.FileServer(http.FS(s.spaSub))
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Redirect /api/* misses to JSON 404 (defensive).
+		if strings.HasPrefix(r.URL.Path, "/api/") {
+			http.NotFound(w, r)
+			return
+		}
+		// Try the file as-is.
+		if s.spaFileExists(r.URL.Path) {
+			fileServer.ServeHTTP(w, r)
+			return
+		}
+		// Try /path/index.html (for trailing-slash-less requests).
+		if !strings.HasSuffix(r.URL.Path, "/") {
+			if s.spaFileExists(r.URL.Path + "/index.html") {
+				http.Redirect(w, r, r.URL.Path+"/", http.StatusMovedPermanently)
+				return
+			}
+		}
+		// Fallback: serve 404.html if present, else default.
+		if data, err := fs.ReadFile(s.spaSub, "404.html"); err == nil {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = w.Write(data)
+			return
+		}
+		http.NotFound(w, r)
 	})
 }
 
-func (s *Server) handleDoc(w http.ResponseWriter, r *http.Request) {
-	slug := strings.TrimPrefix(r.URL.Path, "/docs/")
-	slug = strings.Trim(slug, "/")
-	if slug == "" {
-		s.handleDocsIndex(w, r)
-		return
+func (s *Server) spaFileExists(p string) bool {
+	p = strings.TrimPrefix(p, "/")
+	if p == "" {
+		p = "index.html"
 	}
-	// slug may include section like "01-getting-started/welcome" — take last segment
-	parts := strings.Split(slug, "/")
-	target := parts[len(parts)-1]
-
-	docs, _ := s.loader.InFolder(s.cfg.Content.DocsRoot)
-	var article *cms.Article
-	for _, a := range docs {
-		if a.Slug == target {
-			article = a
-			break
+	if _, err := fs.Stat(s.spaSub, p); err == nil {
+		return true
+	}
+	// trailing slash → look for index.html
+	if strings.HasSuffix(p, "/") {
+		if _, err := fs.Stat(s.spaSub, p+"index.html"); err == nil {
+			return true
 		}
 	}
-	if article == nil {
-		s.notFound(w, r)
-		return
-	}
-	groups := groupBySection(docs)
-	s.render(w, r, "doc.html", map[string]any{
-		"Groups":  groups,
-		"Article": article,
+	return false
+}
+
+func logRequests(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		h.ServeHTTP(w, r)
+		fmt.Printf("%s %s %s (%s)\n", time.Now().Format("15:04:05"), r.Method, r.URL.Path, time.Since(start))
 	})
 }
 
-func (s *Server) handleBlogIndex(w http.ResponseWriter, r *http.Request) {
-	posts, _ := s.loader.InFolder(s.cfg.Blog.Root)
-	s.render(w, r, "blog.html", map[string]any{"Posts": posts})
-}
-
-func (s *Server) handleBlogPost(w http.ResponseWriter, r *http.Request) {
-	slug := strings.Trim(strings.TrimPrefix(r.URL.Path, "/blog/"), "/")
-	if slug == "" {
-		s.handleBlogIndex(w, r)
-		return
-	}
-	a, err := s.loader.Get(s.cfg.Blog.Root, slug)
-	if err != nil || !a.Published {
-		s.notFound(w, r)
-		return
-	}
-	s.render(w, r, "post.html", map[string]any{"Post": a})
-}
-
-func (s *Server) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "api.html", map[string]any{
-		"SpecURL": s.cfg.APIDocs.SpecURL,
-		"Title":   s.cfg.APIDocs.Title,
-	})
-}
-
-func (s *Server) notFound(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
-	s.render(w, r, "404.html", map[string]any{"Path": r.URL.Path})
-}
-
-// pathFromSection returns the section subpath segment for nicer URLs (currently unused; flat slugs).
-func pathFromSection(_ *cms.Article) string { return "" }
-
-// groupBySection produces an ordered list of (section -> articles).
-func groupBySection(articles []*cms.Article) []SectionGroup {
-	type key struct {
-		section string
-		order   int
-	}
-	idx := map[string]int{}
-	var keys []string
-	groups := map[string][]*cms.Article{}
-	for _, a := range articles {
-		sec := a.Section
-		if sec == "" {
-			sec = "General"
-		}
-		if _, ok := idx[sec]; !ok {
-			idx[sec] = len(keys)
-			keys = append(keys, sec)
-		}
-		groups[sec] = append(groups[sec], a)
-	}
-	out := make([]SectionGroup, 0, len(keys))
-	for _, k := range keys {
-		out = append(out, SectionGroup{Title: humanizeSection(k), Articles: groups[k]})
-	}
-	return out
-}
-
-type SectionGroup struct {
-	Title    string
-	Articles []*cms.Article
-}
+// ---- helpers shared with api.go ------------------------------------------
 
 func humanizeSection(s string) string {
-	// strip leading "NN-" prefix and title-case
 	if len(s) > 3 && s[2] == '-' && s[0] >= '0' && s[0] <= '9' {
 		s = s[3:]
 	}
@@ -225,12 +149,4 @@ func humanizeSection(s string) string {
 		parts[i] = strings.ToUpper(p[:1]) + p[1:]
 	}
 	return strings.Join(parts, " ")
-}
-
-func logRequests(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		h.ServeHTTP(w, r)
-		fmt.Printf("%s %s %s (%s)\n", time.Now().Format("15:04:05"), r.Method, r.URL.Path, time.Since(start))
-	})
 }

@@ -8,8 +8,8 @@ import (
 	"templrpress/cmd"
 )
 
-//go:embed all:templates
-var templatesFS embed.FS
+//go:embed all:templrpress-nextjs/out
+var spaFS embed.FS
 
 //go:embed all:static
 var staticFS embed.FS
@@ -20,10 +20,10 @@ var contentFS embed.FS
 //go:embed config.example.yaml
 var configExample []byte
 
-var version = "0.1.0"
+var version = "0.2.0"
 
 func main() {
-	cmd.TemplatesFS = templatesFS
+	cmd.SPAFS = spaFS
 	cmd.StaticFS = staticFS
 	cmd.ContentFS = contentFS
 	cmd.ConfigExample = configExample
