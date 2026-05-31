@@ -123,6 +123,14 @@ export interface BrandingConfig {
   footer_credit_link_text?: string;    // default: "senthilsweb"
   footer_credit_link_url?: string;     // default: "https://github.com/senthilsweb"
 
+  // Footer body (rendered above the bottom credit bar).
+  footer_enabled?: boolean;
+  footer_tagline?: string;
+  footer_columns?: Array<{
+    title: string;
+    links: Array<{ label: string; url: string; external?: boolean }>;
+  }>;
+
   // Landing page hero config (landing-page-config-and-redirect Tier 1)
   hero_badge?: string;
   hero_heading?: string;

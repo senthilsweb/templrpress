@@ -117,8 +117,13 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 		"footer_credit_link_text": s.cfg.Footer.CreditText,
 		"footer_credit_link_url":  s.cfg.Footer.CreditURL,
 		"footer_cta_tagline":      s.cfg.Footer.CTATagline,
+		"footer_cta_primary":      s.cfg.Footer.CTAPrimary,
+		"footer_cta_secondary":    s.cfg.Footer.CTASecondary,
 		"footer_cta_button_text":  s.cfg.Footer.CTAButtonText,
 		"footer_cta_button_url":   s.cfg.Footer.CTAButtonURL,
+		"footer_tagline":          s.cfg.Footer.Tagline,
+		"footer_enabled":          s.cfg.Footer.Enabled,
+		"footer_columns":          s.cfg.Footer.Columns,
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"branding": branding})
 }
