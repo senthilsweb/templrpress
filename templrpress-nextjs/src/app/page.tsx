@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-background">
+      <section className="relative overflow-hidden bg-background">
         <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[var(--tg-primary)]/30 bg-[var(--tg-primary)]/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--tg-primary)]">
@@ -61,6 +61,8 @@ export default function HomePage() {
               description:
                 "Three-column docs with section sidebar, table of contents, and live heading scroll-tracking.",
               icon: BookOpen,
+              iconBg: "bg-blue-100 dark:bg-blue-500/15",
+              iconFg: "text-blue-600 dark:text-blue-400",
             },
             {
               href: "/rest-api-spec",
@@ -68,6 +70,8 @@ export default function HomePage() {
               description:
                 "Multi-spec OpenAPI viewer with cURL, JavaScript, and Python code examples plus a Try It button.",
               icon: Code,
+              iconBg: "bg-amber-100 dark:bg-amber-500/15",
+              iconFg: "text-amber-600 dark:text-amber-400",
             },
             {
               href: "/about",
@@ -75,6 +79,8 @@ export default function HomePage() {
               description:
                 "Author landing copy, about, or any markdown page. Frontmatter drives metadata and ordering.",
               icon: FileText,
+              iconBg: "bg-emerald-100 dark:bg-emerald-500/15",
+              iconFg: "text-emerald-600 dark:text-emerald-400",
             },
           ].map((item) => {
             const Icon = item.icon;
@@ -82,15 +88,19 @@ export default function HomePage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="group rounded-xl border border-border bg-background p-6 transition hover:border-[var(--tg-primary)] hover:shadow-md"
+                className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--tg-primary)]/40 hover:shadow-md"
               >
-                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tg-primary)]/10 text-[var(--tg-primary)]">
-                  <Icon className="h-5 w-5" />
+                <div
+                  className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.iconBg} ${item.iconFg}`}
+                >
+                  <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold group-hover:text-[var(--tg-primary)]">
+                <h3 className="mb-2 text-lg font-semibold text-foreground group-hover:text-[var(--tg-primary)]">
                   {item.label}
                 </h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {item.description}
+                </p>
               </Link>
             );
           })}

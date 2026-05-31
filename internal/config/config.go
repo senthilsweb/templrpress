@@ -103,14 +103,14 @@ type FooterConfig struct {
 }
 
 type FooterColumn struct {
-	Title string       `yaml:"title"`
-	Links []FooterLink `yaml:"links"`
+	Title string       `yaml:"title" json:"title"`
+	Links []FooterLink `yaml:"links" json:"links"`
 }
 
 type FooterLink struct {
-	Label    string `yaml:"label"`
-	URL      string `yaml:"url"`
-	External bool   `yaml:"external"`
+	Label    string `yaml:"label" json:"label"`
+	URL      string `yaml:"url" json:"url"`
+	External bool   `yaml:"external" json:"external,omitempty"`
 }
 
 type NavItem struct {
