@@ -131,8 +131,8 @@ function DocsEmptyState() {
             Documentation
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-            Guides, references, and how-tos for TemplrGo. Select a document
-            from the sidebar to get started, or browse the topics below.
+            Select a document from the sidebar to get started, or browse the
+            topics below.
           </p>
         </div>
 
