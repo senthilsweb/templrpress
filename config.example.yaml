@@ -29,18 +29,42 @@ branding:
   hero_cta_secondary_text: "View Blog"
   hero_cta_secondary_url: "/blog"
 
-content:
-  # source: "./content"        # External markdown directory; empty = use embedded.
-  docs_root: "docs"            # Subfolder under content/ for docs pages.
-                               # Switch to "docs-empty" to suppress the bundled
-                               # TemplrPress documentation and ship a blank
-                               # canvas (see content/docs-empty/).
+# ---------------------------------------------------------------------------
+# CMS — markdown content loader. Mirrors templrgo's `cms:` block.
+#
+# How sources are resolved (in order):
+#   1. Embedded TemplrPress system docs are ALWAYS the primary source.
+#   2. If `cms.source` points at a directory on disk, its contents are
+#      UNION-merged with the embedded source. Embedded wins on path
+#      collisions (folder/slug).
+#   3. For any folder listed under `cms.folders`, the `source` path
+#      switches that folder to REPLACE mode: the embedded counterpart
+#      is hidden and only the override is served.
+#
+# Blog is always-external. If `cms.folders.blog.source` is unset, the
+# loader looks for ./content/blog and then ./blog on disk and uses
+# whichever exists. If neither exists, /blog returns empty (the embedded
+# sample blog is never served).
+# ---------------------------------------------------------------------------
+cms:
+  source: ""                  # Optional whole-tree union source (local dir).
+  cache_ttl: "30m"            # Embedded content is cached; external is live.
+  docs_root: "docs"           # Subfolder for docs. Set to "docs-empty" to
+                              # ship a blank-canvas site with no bundled docs.
   about_file: "about.md"
+  # folders:                  # Per-folder REPLACE overrides (optional).
+  #   docs:
+  #     source: "./content/docs"   # Hides embedded TemplrPress docs.
+  #   blog:
+  #     source: "./content/blog"   # Blog content is always external.
 
 blog:
   enabled: false               # Hidden by default — flip to true to expose /blog.
   root: "blog"
   page_size: 10
+  # source: ""                 # Explicit on-disk blog directory. When unset
+                               # the loader auto-discovers ./content/blog or
+                               # ./blog. Blog is never served from embed.
 
 api_docs:
   enabled: true
@@ -48,17 +72,28 @@ api_docs:
   title: "TemplrPress API"
 
 # OpenAPI / Swagger spec registry.
-# Register additional specs to be shown in the /rest-api-spec viewer's
-# dropdown alongside the built-in TemplrPress spec. Each entry needs a
-# unique `name` and a `url` pointing to a file bundled under /static/...
-# (the OSS build does not fetch remote URLs). Both JSON and YAML files
-# are supported; the server transparently re-emits YAML as JSON for the
-# SPA. The synthetic `_builtin` entry is shown first by default.
+# Register additional specs shown in the /rest-api-spec viewer dropdown
+# alongside the built-in TemplrPress spec.
+#
+# url must be a /static/... path. Two resolution strategies:
+#   1. Embedded (default) — place files in static/openapi/ at build time;
+#      they are compiled into the binary and served from memory.
+#   2. Volume-mounted (Docker) — mount a host directory to
+#      /app/static/openapi/ at runtime. The handler tries embed.FS first
+#      then falls back to disk, so no config change is needed.
+#
+# Both JSON and YAML are accepted; YAML is re-emitted as JSON for the SPA.
+# The synthetic `_builtin` entry is always shown first.
 openapi_specs:
   - name: petstore
     url: /static/openapi/petstore.json
     description: "Demo · Swagger Petstore"
     is_default: false
+  # Volume-mount example:
+  # - name: my-api
+  #   url: /static/openapi/my-api.json
+  #   description: "My service API"
+  #   is_default: true
 
 footer:
   enabled: true

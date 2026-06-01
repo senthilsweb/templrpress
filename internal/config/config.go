@@ -12,12 +12,16 @@ type Config struct {
 	Site         SiteConfig         `yaml:"site"`
 	Server       ServerConfig       `yaml:"server"`
 	Branding     BrandingConfig     `yaml:"branding"`
-	Content      ContentConfig      `yaml:"content"`
+	CMS          CMSConfig          `yaml:"cms"`
 	Blog         BlogConfig         `yaml:"blog"`
 	APIDocs      APIDocsConfig      `yaml:"api_docs"`
 	OpenAPISpecs []OpenAPISpecEntry `yaml:"openapi_specs"`
 	Footer       FooterConfig       `yaml:"footer"`
 	Nav          []NavItem          `yaml:"navigation"`
+
+	// Deprecated: use `cms:` instead. Retained so existing config files
+	// keep working — values are folded into CMS during applyDefaults().
+	Content *LegacyContentConfig `yaml:"content,omitempty"`
 }
 
 // OpenAPISpecEntry registers an additional OpenAPI document available in
@@ -61,12 +65,31 @@ type BrandingConfig struct {
 	HeroCTA2URL   string `yaml:"hero_cta_secondary_url"`
 }
 
-type ContentConfig struct {
-	// Source: directory on disk to read markdown from. Empty = use embedded.
-	Source string `yaml:"source"`
-	// DocsRoot is the subfolder under content for docs (default "docs").
-	DocsRoot string `yaml:"docs_root"`
-	// AboutFile is the path to the about page markdown (default "about.md").
+// CMSConfig holds markdown content settings. Mirrors templrgo's cms: block.
+//
+//   - Source: optional on-disk directory merged with the embedded content
+//     in UNION mode (embedded wins on path collision).
+//   - Folders: per-folder overrides. When `cms.folders.<name>.source` is
+//     set, that folder switches to REPLACE mode: embedded entries for the
+//     folder are excluded and only the override path is scanned.
+type CMSConfig struct {
+	Source    string                     `yaml:"source"`
+	CacheTTL  string                     `yaml:"cache_ttl"`
+	Folders   map[string]CMSFolderConfig `yaml:"folders"`
+	DocsRoot  string                     `yaml:"docs_root"`
+	AboutFile string                     `yaml:"about_file"`
+}
+
+// CMSFolderConfig is the per-folder external override.
+type CMSFolderConfig struct {
+	Source   string `yaml:"source"`
+	CacheTTL string `yaml:"cache_ttl"`
+}
+
+// LegacyContentConfig accepts the old `content:` block and is folded into CMS.
+type LegacyContentConfig struct {
+	Source    string `yaml:"source"`
+	DocsRoot  string `yaml:"docs_root"`
 	AboutFile string `yaml:"about_file"`
 }
 
@@ -74,6 +97,10 @@ type BlogConfig struct {
 	Enabled  bool   `yaml:"enabled"`
 	Root     string `yaml:"root"` // subfolder under content (default "blog")
 	PageSize int    `yaml:"page_size"`
+	// Source is an on-disk directory the blog is read from. Blog content is
+	// always external — if Source is empty the loader looks for `./<root>`
+	// (e.g. ./blog or ./content/blog) and disables the blog if neither exists.
+	Source string `yaml:"source"`
 }
 
 type APIDocsConfig struct {
@@ -182,11 +209,26 @@ func (c *Config) applyDefaults() {
 	if c.Branding.PrimaryHex == "" {
 		c.Branding.PrimaryHex = "#1e40af"
 	}
-	if c.Content.DocsRoot == "" {
-		c.Content.DocsRoot = "docs"
+	if c.CMS.DocsRoot == "" {
+		c.CMS.DocsRoot = "docs"
 	}
-	if c.Content.AboutFile == "" {
-		c.Content.AboutFile = "about.md"
+	if c.CMS.AboutFile == "" {
+		c.CMS.AboutFile = "about.md"
+	}
+	if c.CMS.CacheTTL == "" {
+		c.CMS.CacheTTL = "30m"
+	}
+	// Legacy `content:` block → fold into cms when cms fields are unset.
+	if c.Content != nil {
+		if c.CMS.Source == "" {
+			c.CMS.Source = c.Content.Source
+		}
+		if c.Content.DocsRoot != "" {
+			c.CMS.DocsRoot = c.Content.DocsRoot
+		}
+		if c.Content.AboutFile != "" {
+			c.CMS.AboutFile = c.Content.AboutFile
+		}
 	}
 	if c.Blog.Root == "" {
 		c.Blog.Root = "blog"
