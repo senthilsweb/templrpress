@@ -10,7 +10,9 @@ with three files:
 
 ## Active changes
 
-_(none yet — see `openspec/changes/` for in-flight proposals)_
+| Change ID | Summary | Status |
+|-----------|---------|--------|
+| [`openapi-disk-fallback`](changes/openapi-disk-fallback/proposal.md) | Disk fallback in `handleOpenAPISpec` so volume-mounted spec files work without rebuilding the binary | implemented |
 
 ## Project north star
 

@@ -54,6 +54,42 @@ The built-in `templrpress` spec is always present and cannot be removed.
 
 ## Hosting your spec files
 
-Drop spec files into `static/openapi/` and reference them with
-`/static/openapi/<name>`. They are embedded into the binary alongside the rest
-of `static/`. No separate web server is needed.
+### Embedded (default)
+
+Drop spec files into `static/openapi/` at build time. They are compiled into
+the binary via `go:embed` and served directly from memory. No web server or
+volume mount is needed.
+
+### Volume-mounted (Docker)
+
+If you cannot rebuild the binary, place your spec files on the host and
+mount them into the container at `/app/static/openapi/`:
+
+```yaml
+# docker-compose.yaml
+services:
+  templrpress:
+    image: ghcr.io/senthilsweb/templrpress:latest
+    ports: ["3000:3000"]
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./content:/app/content:ro
+      - ./openapi:/app/static/openapi:ro   # <-- spec files live here
+```
+
+Then reference them normally in `config.yaml`:
+
+```yaml
+openapi_specs:
+  - name: my-api
+    url: /static/openapi/my-api.json
+    description: "My service API"
+    is_default: true
+```
+
+The handler first checks the embedded FS; if the path is not found there it
+falls back to reading from disk (`<cwd>/static/openapi/<file>`). This makes
+volume-mounted specs transparent — no config flag is required.
+
+> **Note**: the embedded spec always wins on a path collision. If you want a
+> volume-mounted file to override a built-in one, use a distinct filename.

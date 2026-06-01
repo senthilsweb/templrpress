@@ -4,7 +4,8 @@ import Link from "next/link";
 import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Code, Eye, AlertTriangle } from "lucide-react";
+import { DiagramPreview } from "@/components/diagrams/diagram-factory";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -402,6 +403,157 @@ export function useActiveHeading(toc: TocEntry[]): string {
   return activeId;
 }
 
+/* ------------------------------------------------------------------ */
+/*  DiagramTabsBlock — Code / Preview tabs for yaml-diagram-tabs       */
+/* ------------------------------------------------------------------ */
+
+function DiagramTabsBlock({ yaml: yamlText }: { yaml: string }) {
+  const [tab, setTab] = useState<"code" | "preview">("preview");
+  const isPipeline = /\bnodes\b/.test(yamlText) && /\bedges\b/.test(yamlText);
+  return (
+    <div className="not-prose my-6 overflow-hidden rounded-2xl border border-border shadow-md">
+      <div className="flex items-center gap-0 border-b border-border bg-zinc-800">
+        <button
+          onClick={() => setTab("code")}
+          className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+            tab === "code"
+              ? "bg-zinc-700 text-white"
+              : "text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          <Code className="size-3.5" />
+          Code
+        </button>
+        <button
+          onClick={() => setTab("preview")}
+          className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+            tab === "preview"
+              ? "bg-zinc-700 text-white"
+              : "text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          <Eye className="size-3.5" />
+          Preview
+        </button>
+        <div className="ml-auto pr-3">
+          <CodeCopyButton text={yamlText} />
+        </div>
+      </div>
+      {tab === "code" ? (
+        <pre className="overflow-x-auto bg-zinc-900 p-5 font-mono text-[13px] leading-relaxed">
+          <code>{colorizeCode(yamlText, "yaml")}</code>
+        </pre>
+      ) : (
+        <div className={`bg-card p-4 ${isPipeline ? "[&_.react-flow__attribution]:hidden" : ""}`}>
+          <DiagramPreview
+            yaml={yamlText}
+            showZoom={false}
+            showDownload={false}
+            maxHeight={isPipeline ? "350px" : "500px"}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MermaidBlock({ chart }: { chart: string }) {
+  const [error, setError] = useState<string | null>(null);
+  const [isRendering, setIsRendering] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const chartIdRef = useRef(`mermaid-${Math.random().toString(36).slice(2)}`);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function renderChart() {
+      setIsRendering(true);
+      setError(null);
+
+      try {
+        const mermaid = (await import("mermaid")).default;
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: "strict",
+          theme: document.documentElement.classList.contains("dark")
+            ? "dark"
+            : "default",
+        });
+
+        const { svg, bindFunctions } = await mermaid.render(
+          chartIdRef.current,
+          chart,
+        );
+
+        if (cancelled || !containerRef.current) return;
+
+        containerRef.current.innerHTML = svg;
+        bindFunctions?.(containerRef.current);
+        setIsRendering(false);
+      } catch (renderError) {
+        if (cancelled) return;
+        if (containerRef.current) {
+          containerRef.current.innerHTML = "";
+        }
+        setError(
+          renderError instanceof Error
+            ? renderError.message
+            : "Unknown Mermaid render error",
+        );
+        setIsRendering(false);
+      }
+    }
+
+    renderChart();
+
+    return () => {
+      cancelled = true;
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
+    };
+  }, [chart]);
+
+  return (
+    <div className="not-prose my-6 overflow-hidden rounded-2xl border border-border shadow-md">
+      <div className="flex items-center border-b border-zinc-700 bg-zinc-800 px-4 py-2.5">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+          Mermaid
+        </span>
+        <div className="ml-auto">
+          <CodeCopyButton text={chart} />
+        </div>
+      </div>
+
+      {error ? (
+        <div className="space-y-4 bg-yellow-500/5 p-4 text-sm text-yellow-700 dark:text-yellow-300">
+          <div className="flex items-start gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="font-medium">Could not render Mermaid diagram</p>
+              <p className="mt-1 text-xs opacity-80">{error}</p>
+            </div>
+          </div>
+          <pre className="overflow-x-auto rounded-xl bg-zinc-900 p-4 font-mono text-[13px] leading-relaxed text-slate-300">
+            <code>{chart}</code>
+          </pre>
+        </div>
+      ) : (
+        <div className="overflow-x-auto bg-white p-4 dark:bg-zinc-950">
+          {isRendering && (
+            <p className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">
+              Rendering diagram...
+            </p>
+          )}
+          <div
+            ref={containerRef}
+            className="[&_svg]:h-auto [&_svg]:max-w-full [&_svg]:overflow-visible"
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /*  ArticleBody — the shared markdown renderer                         */
@@ -464,6 +616,30 @@ export function ArticleBody({
                 children as React.ReactElement<{ className?: string }>
               ).props;
               lang = detectLanguage(codeProps.className);
+            }
+
+            /* ── yaml-diagram fence → render live diagram ── */
+            if (lang === "yaml-diagram") {
+              return (
+                <div className="not-prose my-6">
+                  <DiagramPreview
+                    yaml={text}
+                    showZoom={false}
+                    showDownload={false}
+                    maxHeight="500px"
+                  />
+                </div>
+              );
+            }
+
+            /* ── yaml-diagram-tabs fence → Code / Preview tabs ── */
+            if (lang === "yaml-diagram-tabs") {
+              return <DiagramTabsBlock yaml={text} />;
+            }
+
+            /* ── mermaid fence → render Mermaid diagram ── */
+            if (lang === "mermaid") {
+              return <MermaidBlock chart={text} />;
             }
 
             const label = LANG_LABELS[lang] ?? lang.toUpperCase();

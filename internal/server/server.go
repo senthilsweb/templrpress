@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -27,7 +28,7 @@ type Server struct {
 }
 
 func New(cfg *config.Config, assets Assets) (*Server, error) {
-	loader := cms.New(assets.Content, "content", cfg.Content.Source)
+	loader := buildLoader(cfg, assets)
 
 	// SPA root: templrpress-nextjs/out (static export)
 	spaSub, err := fs.Sub(assets.SPA, "templrpress-nextjs/out")
@@ -36,6 +37,81 @@ func New(cfg *config.Config, assets Assets) (*Server, error) {
 	}
 	return &Server{cfg: cfg, assets: assets, loader: loader, spaSub: spaSub}, nil
 }
+
+// buildLoader assembles the CMS loader from the cms: config block. Rules
+// (mirroring templrgo):
+//
+//   - Embedded system content is always the primary source.
+//   - cms.source (if a valid directory) is added as a UNION secondary so
+//     custom markdown on disk merges with embedded; embedded wins on
+//     folder/slug collision.
+//   - cms.folders.<name>.source switches that folder to REPLACE mode: the
+//     embedded counterpart is hidden and only the override is served.
+//   - Blog is always-external: if cms.folders.blog.source is unset, the
+//     loader looks for ./content/blog then ./blog on disk and uses
+//     whichever exists in REPLACE mode. If neither exists the blog
+//     folder is suppressed entirely.
+func buildLoader(cfg *config.Config, assets Assets) *cms.Loader {
+	var sources []cms.Source
+
+	// Embedded primary (system docs etc.).
+	if sub, err := fs.Sub(assets.Content, "content"); err == nil {
+		sources = append(sources, cms.Source{FS: sub, Root: "."})
+	}
+
+	// Optional whole-tree external union.
+	if cfg.CMS.Source != "" {
+		if info, err := os.Stat(cfg.CMS.Source); err == nil && info.IsDir() {
+			sources = append([]cms.Source{{FS: os.DirFS(cfg.CMS.Source), Root: ".", External: true}}, sources...)
+		} else {
+			fmt.Fprintf(os.Stderr, "cms: external source %q not found, using embedded only\n", cfg.CMS.Source)
+		}
+	}
+
+	overrides := map[string]cms.Source{}
+	for folder, fc := range cfg.CMS.Folders {
+		if fc.Source == "" {
+			continue
+		}
+		info, err := os.Stat(fc.Source)
+		if err != nil || !info.IsDir() {
+			fmt.Fprintf(os.Stderr, "cms: folder %q override %q not found, ignoring\n", folder, fc.Source)
+			continue
+		}
+		overrides[folder] = cms.Source{FS: os.DirFS(fc.Source), Root: ".", External: true}
+	}
+
+	// Blog is always external. Resolve a default disk source when the user
+	// hasn't set one explicitly.
+	blogRoot := cfg.Blog.Root
+	if blogRoot == "" {
+		blogRoot = "blog"
+	}
+	if _, set := overrides[blogRoot]; !set {
+		candidates := []string{cfg.Blog.Source, "content/" + blogRoot, blogRoot}
+		for _, p := range candidates {
+			if p == "" {
+				continue
+			}
+			if info, err := os.Stat(p); err == nil && info.IsDir() {
+				overrides[blogRoot] = cms.Source{FS: os.DirFS(p), Root: ".", External: true}
+				break
+			}
+		}
+		if _, ok := overrides[blogRoot]; !ok {
+			// Suppress embedded blog by pointing at an empty in-memory FS.
+			overrides[blogRoot] = cms.Source{FS: emptyFS{}, Root: "."}
+		}
+	}
+
+	return cms.NewMulti(sources, overrides)
+}
+
+// emptyFS is an fs.FS with no entries — used to suppress the embedded blog
+// when no external blog source is configured.
+type emptyFS struct{}
+
+func (emptyFS) Open(name string) (fs.File, error) { return nil, fs.ErrNotExist }
 
 func (s *Server) Run() error {
 	mux := http.NewServeMux()

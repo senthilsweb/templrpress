@@ -22,10 +22,21 @@ disk, set `content.source` in `config.yaml`.
 ## Docker
 
 ```bash
-docker run --rm -p 5000:5000 \
+docker run --rm -p 3000:3000 \
   -v $(pwd)/config.yaml:/app/config.yaml \
   -v $(pwd)/content:/app/content \
-  ghcr.io/your-org/templrpress:latest
+  ghcr.io/senthilsweb/templrpress:latest
+```
+
+To serve custom OpenAPI spec files without rebuilding the image, add an
+`openapi` volume that lands at `/app/static/openapi/`:
+
+```bash
+docker run --rm -p 3000:3000 \
+  -v $(pwd)/config.yaml:/app/config.yaml \
+  -v $(pwd)/content:/app/content \
+  -v $(pwd)/openapi:/app/static/openapi \
+  ghcr.io/senthilsweb/templrpress:latest
 ```
 
 ## docker-compose
@@ -33,11 +44,12 @@ docker run --rm -p 5000:5000 \
 ```yaml
 services:
   templrpress:
-    image: ghcr.io/your-org/templrpress:latest
-    ports: ["5000:5000"]
+    image: ghcr.io/senthilsweb/templrpress:latest
+    ports: ["3000:3000"]
     volumes:
-      - ./config.yaml:/app/config.yaml
-      - ./content:/app/content
+      - ./config.yaml:/app/config.yaml:ro
+      - ./content:/app/content:ro
+      - ./openapi:/app/static/openapi:ro  # optional — custom OpenAPI specs
 ```
 
 ## GitHub Actions
