@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, useCallback, useMemo } from "react";
+import { Suspense, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   BookOpen,
@@ -35,6 +35,7 @@ function countWords(text: string): number {
 
 interface NavItem {
   title: string;
+  navTitle?: string;
   slug: string;
   description: string;
   folder: string;
@@ -236,6 +237,68 @@ function DocsContent() {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  /* ---- Resizable sidebar (desktop only) ---- */
+  const SIDEBAR_MIN = 220;
+  const SIDEBAR_MAX = 560;
+  const SIDEBAR_DEFAULT = 288; // matches the previous w-72 (18rem)
+  const SIDEBAR_STORAGE_KEY = "templrpress.docs.sidebarWidth";
+  const [sidebarWidth, setSidebarWidth] = useState<number>(SIDEBAR_DEFAULT);
+  const [isResizing, setIsResizing] = useState(false);
+  const resizingRef = useRef(false);
+
+  // Hydrate persisted width once on mount.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+      if (raw) {
+        const n = parseInt(raw, 10);
+        if (!Number.isNaN(n)) {
+          setSidebarWidth(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, n)));
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  // Persist width when it changes (skip while actively dragging to avoid churn).
+  useEffect(() => {
+    if (isResizing) return;
+    try {
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(sidebarWidth));
+    } catch {
+      /* ignore */
+    }
+  }, [sidebarWidth, isResizing]);
+
+  const startResize = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    resizingRef.current = true;
+    setIsResizing(true);
+
+    const onMove = (ev: MouseEvent) => {
+      if (!resizingRef.current) return;
+      const next = Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, ev.clientX));
+      setSidebarWidth(next);
+    };
+    const onUp = () => {
+      resizingRef.current = false;
+      setIsResizing(false);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  }, []);
+
+  const resetWidth = useCallback(() => {
+    setSidebarWidth(SIDEBAR_DEFAULT);
+  }, []);
   const [searchQuery, setSearchQuery] = useState("");
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
 
@@ -332,6 +395,7 @@ function DocsContent() {
       (items ?? []).filter(
         (i) =>
           i.title.toLowerCase().includes(q) ||
+          (i.navTitle ?? "").toLowerCase().includes(q) ||
           (i.description ?? "").toLowerCase().includes(q),
       );
 
@@ -474,8 +538,9 @@ function DocsContent() {
 
       {/* ===== DESKTOP SIDEBAR ===== */}
       <aside
-        className={`relative hidden flex-col text-white shadow-lg transition-all duration-300 md:flex sidebar-themed ${
-          sidebarOpen ? "w-72" : "w-[60px]"
+        style={{ width: sidebarOpen ? `${sidebarWidth}px` : "60px" }}
+        className={`relative hidden flex-col text-white shadow-lg md:flex sidebar-themed ${
+          isResizing ? "" : "transition-[width] duration-300"
         }`}
       >
         <button
@@ -496,6 +561,23 @@ function DocsContent() {
         >
           {sidebarContent}
         </div>
+
+        {/* Drag gutter — only when expanded */}
+        {sidebarOpen && (
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize sidebar"
+            onMouseDown={startResize}
+            onDoubleClick={resetWidth}
+            className={`absolute right-0 top-0 z-20 h-full w-1.5 -mr-0.5 cursor-col-resize select-none group ${
+              isResizing ? "bg-white/40" : "hover:bg-white/30"
+            }`}
+            title="Drag to resize · double-click to reset"
+          >
+            <div className="pointer-events-none absolute right-[2px] top-1/2 h-10 w-[3px] -translate-y-1/2 rounded-full bg-white/30 opacity-0 group-hover:opacity-100" />
+          </div>
+        )}
       </aside>
 
       {/* ===== MAIN CONTENT ===== */}
@@ -591,7 +673,7 @@ function SidebarItem({
       }`}
     >
       <div className="min-w-0 flex-1">
-        <span className="block truncate">{item.title}</span>
+        <span className="block truncate">{item.navTitle?.trim() || item.title}</span>
         {item.description && (
           <span className="block truncate text-xs opacity-50">
             {item.description}
