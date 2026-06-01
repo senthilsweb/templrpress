@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"net/http"
 	"runtime"
+	"sort"
 	"strings"
 	"time"
 
@@ -258,6 +259,7 @@ func normalizeYAMLForJSON(v any) any {
 
 type frontmatterOut struct {
 	Title       string    `json:"title"`
+	NavTitle    string    `json:"navTitle,omitempty"`
 	Slug        string    `json:"slug"`
 	Description string    `json:"description"`
 	Date        time.Time `json:"date,omitempty"`
@@ -274,6 +276,7 @@ type frontmatterOut struct {
 func articleFrontmatter(a *cms.Article, kind string) frontmatterOut {
 	return frontmatterOut{
 		Title:       a.Title,
+		NavTitle:    a.NavTitle,
 		Slug:        a.Slug,
 		Description: a.Description,
 		Date:        a.Date,
@@ -290,7 +293,7 @@ func articleFrontmatter(a *cms.Article, kind string) frontmatterOut {
 
 // /api/cms/docs/nav — sidebar tree for the docs page.
 func (s *Server) handleDocsNav(w http.ResponseWriter, r *http.Request) {
-	docs, err := s.loader.InFolder(s.cfg.Content.DocsRoot)
+	docs, err := s.loader.InFolder(s.cfg.CMS.DocsRoot)
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
@@ -298,6 +301,7 @@ func (s *Server) handleDocsNav(w http.ResponseWriter, r *http.Request) {
 
 	type item struct {
 		Title       string `json:"title"`
+		NavTitle    string `json:"navTitle,omitempty"`
 		Slug        string `json:"slug"`
 		Description string `json:"description"`
 		Folder      string `json:"folder"`
@@ -320,7 +324,7 @@ func (s *Server) handleDocsNav(w http.ResponseWriter, r *http.Request) {
 
 	for _, a := range docs {
 		flatOrder = append(flatOrder, flat{Folder: a.Folder, Slug: a.Slug})
-		it := item{Title: a.Title, Slug: a.Slug, Description: a.Description, Folder: a.Folder, SortOrder: a.SortOrder}
+		it := item{Title: a.Title, NavTitle: a.NavTitle, Slug: a.Slug, Description: a.Description, Folder: a.Folder, SortOrder: a.SortOrder}
 		sec := a.Section
 		if sec == "" {
 			rootItems = append(rootItems, it)
@@ -333,6 +337,7 @@ func (s *Server) handleDocsNav(w http.ResponseWriter, r *http.Request) {
 		sectionMap[sec].Items = append(sectionMap[sec].Items, it)
 	}
 
+	sort.Strings(order)
 	sections := make([]section, 0, len(order))
 	for _, k := range order {
 		sections = append(sections, *sectionMap[k])
@@ -367,7 +372,7 @@ func (s *Server) handleCMSList(w http.ResponseWriter, r *http.Request) {
 	// Fallback: if `type=about` is requested but content/about/ is empty,
 	// expose the legacy single-file `content/about.md` as one entry.
 	if kind == "about" && len(out) == 0 {
-		if a, err := s.loader.GetByPath(s.cfg.Content.AboutFile); err == nil {
+		if a, err := s.loader.GetByPath(s.cfg.CMS.AboutFile); err == nil {
 			a.Folder = "about"
 			out = append(out, articleFrontmatter(a, "about"))
 		}
@@ -390,8 +395,8 @@ func (s *Server) handleAboutGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Legacy single-file fallback for default about slug.
-	if a, err := s.loader.GetByPath(s.cfg.Content.AboutFile); err == nil {
-		if a.Slug == slug || slug == strings.TrimSuffix(s.cfg.Content.AboutFile, ".md") {
+	if a, err := s.loader.GetByPath(s.cfg.CMS.AboutFile); err == nil {
+		if a.Slug == slug || slug == strings.TrimSuffix(s.cfg.CMS.AboutFile, ".md") {
 			a.Folder = "about"
 			s.writeArticle(w, a, "about")
 			return
@@ -414,7 +419,7 @@ func (s *Server) handleCMSArticle(w http.ResponseWriter, r *http.Request) {
 	if len(parts) == 2 {
 		folder, slug = parts[0], parts[1]
 	} else {
-		folder, slug = s.cfg.Content.DocsRoot, parts[0]
+		folder, slug = s.cfg.CMS.DocsRoot, parts[0]
 	}
 	a, err := s.loader.Get(folder, slug)
 	if err != nil || !a.Published {
