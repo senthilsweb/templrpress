@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
@@ -191,6 +193,10 @@ func (s *Server) handleOpenAPISpec(w http.ResponseWriter, r *http.Request) {
 		rel := strings.TrimPrefix(e.URL, "/")
 		rel = strings.TrimPrefix(rel, "static/")
 		data, err := fs.ReadFile(staticSub, rel)
+		if err != nil {
+			// Fallback: try reading from disk (supports volume-mounted spec files).
+			data, err = os.ReadFile(filepath.Join("static", rel))
+		}
 		if err != nil {
 			writeJSON(w, http.StatusNotFound, map[string]string{"error": "spec file not found", "reason": err.Error()})
 			return
