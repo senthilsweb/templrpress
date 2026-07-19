@@ -33,21 +33,36 @@ branding:
   quickstart_title: "Run it in one line"
   quickstart_command: "docker run --rm -p 5000:5000 ghcr.io/senthilsweb/templrpress:latest"
 
-  # Optional feature cards. Omit the whole list to keep the built-in three.
+  # Feature cards. Omit the whole list to keep the built-in three.
+  # features_style: tint (default, icon cards) | gradient (bold gradient CTA cards)
   # icon: book-open | code | file-text | zap | rocket | layers | globe | terminal
-  # features:
-  #   - icon: book-open
-  #     title: "Markdown Docs"
-  #     description: "Three-column docs with section sidebar, table of contents, and live heading scroll-tracking."
-  #     url: "/docs"
-  #   - icon: code
-  #     title: "API Explorer"
-  #     description: "Multi-spec OpenAPI viewer with cURL, JavaScript, and Python code examples plus a Try It button."
-  #     url: "/rest-api-spec"
-  #   - icon: file-text
-  #     title: "Custom Pages"
-  #     description: "Author landing copy, about, or any markdown page. Frontmatter drives metadata and ordering."
-  #     url: "/about"
+  # gradient: violet | rose | amber | teal | navy (cycles when unset)
+  features_style: gradient
+  features:
+    - title: "Markdown Docs"
+      description: "Three-column docs with section sidebar, table of contents, and live heading scroll-tracking."
+      url: "/docs"
+      cta_text: "Read the docs"
+      gradient: violet
+    - title: "API Explorer"
+      description: "Multi-spec OpenAPI viewer with cURL, JavaScript, and Python code examples plus a Try It button."
+      url: "/rest-api-spec"
+      cta_text: "Open the explorer"
+      gradient: rose
+    - title: "Custom Pages"
+      description: "Author landing copy, about, or any markdown page. Frontmatter drives metadata and ordering."
+      url: "/about"
+      cta_text: "See an example"
+      gradient: amber
+
+  # Optional Ghost-style alternating text/visual bands below the cards.
+  # image_url accepts /static/... (embedded or volume-mounted) or https://...
+  # showcase:
+  #   - title: "Docs that ship inside the binary."
+  #     body: "Author markdown, get a three-column docs site with nav, TOC, and scroll-tracking — no build step, no separate deploy."
+  #     image_url: "/static/showcase/docs.png"
+  #     cta_text: "Browse the docs"
+  #     cta_url: "/docs"
 
 # ---------------------------------------------------------------------------
 # CMS — markdown content loader. Mirrors templrgo's `cms:` block.
@@ -146,6 +161,23 @@ footer:
 # Top navigation. Children create a hover-flyout. Items with `enabled: false`
 # are hidden. Set blog/api items to `enabled: false` to remove from nav even
 # when the route itself stays enabled.
+# Items support templrgo-style flyout menus: give an item `children:` for a
+# dropdown (each child may carry subtitle/description/icon), `columns:` for a
+# multi-column flyout, and `footer:` for the full-bleed themed band below it.
+#   - label: "Resources"
+#     children:
+#       - label: "Quickstart"
+#         url: "/docs/quickstart"
+#         icon: "zap"
+#         subtitle: "Running in under a minute"
+#       - label: "Deployment"
+#         url: "/docs/deployment"
+#         icon: "rocket"
+#         subtitle: "Docker, volumes, CI"
+#     footer:
+#       title: "TemplrPress on GitHub"
+#       subtitle: "Star the repo, file issues, send PRs."
+#       url: "https://github.com/senthilsweb/templrpress"
 navigation:
   - label: "Docs"
     url: "/docs"

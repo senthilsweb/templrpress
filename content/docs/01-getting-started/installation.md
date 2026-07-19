@@ -3,7 +3,7 @@ title: Installation
 slug: installation
 description: Install TemplrPress on Linux, macOS, or Windows — single binary, no dependencies.
 category: Getting Started
-sort_order: 1
+sort_order: 2
 published: true
 ---
 

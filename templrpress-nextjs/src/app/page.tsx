@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useConfig } from "@/providers/config-provider";
-import type { FeatureCard } from "@/lib/config";
+import type { FeatureCard, ShowcaseItem } from "@/lib/config";
 
 // Allowlisted icons for config-driven feature cards; unknown names fall back
 // to FileText (see openspec/changes/ui-refresh-api-landing/design.md).
@@ -39,6 +39,17 @@ const CARD_TINTS = [
   { bg: "bg-amber-100 dark:bg-amber-500/15", fg: "text-amber-600 dark:text-amber-400" },
   { bg: "bg-emerald-100 dark:bg-emerald-500/15", fg: "text-emerald-600 dark:text-emerald-400" },
 ];
+
+// Gradient presets for features_style: gradient. Cards cycle through the
+// first three when a card doesn't name its own preset.
+const CARD_GRADIENTS: Record<string, string> = {
+  violet: "from-violet-500 via-purple-500 to-purple-600",
+  rose: "from-rose-500 via-pink-500 to-pink-600",
+  amber: "from-amber-400 via-orange-400 to-orange-500",
+  teal: "from-teal-400 via-emerald-500 to-emerald-600",
+  navy: "from-slate-700 via-slate-800 to-slate-900",
+};
+const GRADIENT_CYCLE = ["violet", "rose", "amber"];
 
 const DEFAULT_FEATURES: FeatureCard[] = [
   {
@@ -118,6 +129,8 @@ export default function HomePage() {
     branding?.features && branding.features.length > 0
       ? branding.features
       : DEFAULT_FEATURES;
+  const featuresStyle = branding?.features_style === "gradient" ? "gradient" : "tint";
+  const showcase: ShowcaseItem[] = branding?.showcase ?? [];
 
   return (
     <div className="flex flex-col">
@@ -181,6 +194,28 @@ export default function HomePage() {
       <section className="mx-auto w-full max-w-6xl px-6 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((item, i) => {
+            if (featuresStyle === "gradient") {
+              const preset =
+                CARD_GRADIENTS[item.gradient ?? ""] ??
+                CARD_GRADIENTS[GRADIENT_CYCLE[i % GRADIENT_CYCLE.length]];
+              return (
+                <Link
+                  key={`${item.url}-${item.title}`}
+                  href={item.url}
+                  className={`group flex flex-col items-start rounded-2xl bg-gradient-to-br p-8 text-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl ${preset}`}
+                >
+                  <h3 className="mb-3 text-xl font-bold">{item.title}</h3>
+                  <p className="text-sm leading-relaxed text-white/90">
+                    {item.description}
+                  </p>
+                  {item.cta_text && (
+                    <span className="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-black/25 px-4 py-2 text-sm font-semibold transition group-hover:bg-black/35">
+                      {item.cta_text} <ArrowRight className="h-4 w-4" />
+                    </span>
+                  )}
+                </Link>
+              );
+            }
             const Icon = FEATURE_ICONS[item.icon] ?? FileText;
             const tint = CARD_TINTS[i % CARD_TINTS.length];
             return (
@@ -205,6 +240,47 @@ export default function HomePage() {
           })}
         </div>
       </section>
+
+      {/* Showcase rows — alternating text/visual bands (config-driven) */}
+      {showcase.length > 0 && (
+        <section className="mx-auto w-full max-w-6xl space-y-24 px-6 py-16">
+          {showcase.map((row, i) => (
+            <div
+              key={`${row.title}-${i}`}
+              className={`flex flex-col items-center gap-10 lg:gap-16 ${
+                i % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"
+              }`}
+            >
+              <div className="flex-1">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                  {row.title}
+                </h2>
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+                  {row.body}
+                </p>
+                {row.cta_text && row.cta_url && (
+                  <Link
+                    href={row.cta_url}
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--tg-primary)] hover:underline"
+                  >
+                    {row.cta_text} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+              </div>
+              {row.image_url && (
+                <div className="w-full flex-1">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={row.image_url}
+                    alt={row.title}
+                    className="w-full rounded-2xl border border-border shadow-sm"
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   );
 }

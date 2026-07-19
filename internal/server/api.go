@@ -77,20 +77,7 @@ func (s *Server) handleAuthLogout(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 	b := s.cfg.Branding
 
-	type navItem struct {
-		Label    string `json:"label"`
-		URL      string `json:"url,omitempty"`
-		Icon     string `json:"icon,omitempty"`
-		External bool   `json:"external,omitempty"`
-		Subtitle string `json:"subtitle,omitempty"`
-	}
-	nav := make([]navItem, 0, len(s.cfg.Nav))
-	for _, n := range s.cfg.Nav {
-		if !n.IsEnabled() {
-			continue
-		}
-		nav = append(nav, navItem{Label: n.Label, URL: n.URL, Icon: n.Icon, External: n.External})
-	}
+	nav := navItemsJSON(s.cfg.Nav)
 
 	branding := map[string]any{
 		"app_name":          s.cfg.Site.Name,
@@ -118,7 +105,9 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 
 		"quickstart_title":   b.QuickstartTitle,
 		"quickstart_command": b.QuickstartCommand,
+		"features_style":     b.FeaturesStyle,
 		"features":           featureCards(b.Features),
+		"showcase":           showcaseItems(b.Showcase),
 
 		"footer_credit_prefix":    s.cfg.Footer.CreditPrefix,
 		"footer_credit_link_text": s.cfg.Footer.CreditText,
@@ -135,6 +124,58 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"branding": branding})
 }
 
+// navItemsJSON converts config nav items (including nested flyout children,
+// columns, and footers) to the JSON shape the SPA's NavItem type expects.
+// Disabled items are dropped recursively.
+func navItemsJSON(items []config.NavItem) []map[string]any {
+	out := make([]map[string]any, 0, len(items))
+	for _, n := range items {
+		if !n.IsEnabled() {
+			continue
+		}
+		m := map[string]any{"label": n.Label}
+		setIf := func(k, v string) {
+			if v != "" {
+				m[k] = v
+			}
+		}
+		setIf("url", n.URL)
+		setIf("icon", n.Icon)
+		setIf("title", n.Title)
+		setIf("subtitle", n.Subtitle)
+		setIf("description", n.Description)
+		setIf("image_url", n.ImageURL)
+		if n.External {
+			m["external"] = true
+		}
+		if len(n.Children) > 0 {
+			m["children"] = navItemsJSON(n.Children)
+		}
+		if len(n.Columns) > 0 {
+			cols := make([]map[string]any, 0, len(n.Columns))
+			for _, c := range n.Columns {
+				cols = append(cols, map[string]any{
+					"title":    c.Title,
+					"children": navItemsJSON(c.Children),
+				})
+			}
+			m["columns"] = cols
+		}
+		if n.Footer != nil {
+			f := map[string]any{"title": n.Footer.Title}
+			if n.Footer.Subtitle != "" {
+				f["subtitle"] = n.Footer.Subtitle
+			}
+			if n.Footer.URL != "" {
+				f["url"] = n.Footer.URL
+			}
+			m["footer"] = f
+		}
+		out = append(out, m)
+	}
+	return out
+}
+
 // featureCards maps config feature cards to the JSON shape the SPA expects.
 // Returns an empty slice (not null) when unset so clients can length-check.
 func featureCards(cards []config.FeatureCard) []map[string]string {
@@ -145,6 +186,23 @@ func featureCards(cards []config.FeatureCard) []map[string]string {
 			"title":       c.Title,
 			"description": c.Description,
 			"url":         c.URL,
+			"cta_text":    c.CTAText,
+			"gradient":    c.Gradient,
+		})
+	}
+	return out
+}
+
+// showcaseItems maps config showcase rows to the JSON shape the SPA expects.
+func showcaseItems(items []config.ShowcaseItem) []map[string]string {
+	out := make([]map[string]string, 0, len(items))
+	for _, s := range items {
+		out = append(out, map[string]string{
+			"title":     s.Title,
+			"body":      s.Body,
+			"image_url": s.ImageURL,
+			"cta_text":  s.CTAText,
+			"cta_url":   s.CTAURL,
 		})
 	}
 	return out

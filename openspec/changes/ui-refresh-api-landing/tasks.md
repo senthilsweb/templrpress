@@ -42,6 +42,21 @@
        with the allowlisted lucide icon map; keep current three cards as the
        nil-config fallback; hover lift + `--tg-primary` border tint.
 
+## Amendment 1 (post-review): wider code column, gradient cards, showcase, flyout bridge, intro docs
+
+- [x] A1. API page: columns now split 3:2 (`flex-[3]` / `flex-[2]`,
+       code column min 360px, max 640px) so no dead space remains.
+- [x] A2. `features_style: gradient` — bold gradient CTA cards (presets
+       violet/rose/amber/teal/navy, per-card `cta_text`); example config
+       switched to gradient style so the change is visible by default.
+- [x] A3. `showcase:` config — Ghost-style alternating text/visual bands
+       below the feature grid (title, body, image_url, cta).
+- [x] A4. Flyout menu bridge: `config.NavItem` extended with
+       title/subtitle/description/image_url/columns/footer; nav emitted
+       recursively in `handleConfigBranding` (SPA already renders flyouts).
+- [x] A5. `content/docs/01-getting-started/introduction.md` — new intro
+       page (sort_order 0).
+
 ## Verification & housekeeping
 
 - [x] 14. `make all`; run binary; screenshot `/`, `/rest-api-spec` (short +

@@ -69,7 +69,23 @@ type BrandingConfig struct {
 	// default cards.
 	QuickstartTitle   string        `yaml:"quickstart_title"`
 	QuickstartCommand string        `yaml:"quickstart_command"`
+	FeaturesStyle     string        `yaml:"features_style"` // "tint" (default) | "gradient"
 	Features          []FeatureCard `yaml:"features"`
+
+	// Showcase rows rendered below the feature grid: alternating
+	// text/visual bands (Ghost-style). Empty list hides the section.
+	Showcase []ShowcaseItem `yaml:"showcase"`
+}
+
+// ShowcaseItem is one alternating text/visual feature band on the landing
+// page. ImageURL may be a /static/... path (embedded or volume-mounted) or
+// an absolute URL.
+type ShowcaseItem struct {
+	Title    string `yaml:"title"`
+	Body     string `yaml:"body"`
+	ImageURL string `yaml:"image_url"`
+	CTAText  string `yaml:"cta_text"`
+	CTAURL   string `yaml:"cta_url"`
 }
 
 // FeatureCard is one config-driven card on the landing page feature grid.
@@ -80,6 +96,11 @@ type FeatureCard struct {
 	Title       string `yaml:"title"`
 	Description string `yaml:"description"`
 	URL         string `yaml:"url"`
+	// Gradient-style extras: CTAText renders an action button on the card;
+	// Gradient picks a preset (violet, rose, amber, teal, navy) — cards
+	// cycle through presets when unset.
+	CTAText  string `yaml:"cta_text"`
+	Gradient string `yaml:"gradient"`
 }
 
 // CMSConfig holds markdown content settings. Mirrors templrgo's cms: block.
@@ -164,6 +185,30 @@ type NavItem struct {
 	External bool      `yaml:"external"`
 	Enabled  *bool     `yaml:"enabled"` // nil = true
 	Children []NavItem `yaml:"children"`
+
+	// Flyout extras (templrgo-style). Subtitle/Description/ImageURL enrich a
+	// child row; Columns switches the flyout to a multi-column layout;
+	// Footer adds the full-bleed themed band below the flyout body.
+	Title       string      `yaml:"title"`
+	Subtitle    string      `yaml:"subtitle"`
+	Description string      `yaml:"description"`
+	ImageURL    string      `yaml:"image_url"`
+	Columns     []NavColumn `yaml:"columns"`
+	Footer      *NavFooter  `yaml:"footer"`
+}
+
+// NavColumn is one titled column inside a multi-column flyout.
+type NavColumn struct {
+	Title    string    `yaml:"title"`
+	Children []NavItem `yaml:"children"`
+}
+
+// NavFooter is the optional full-bleed band at the bottom of a flyout,
+// themed with the active primary color.
+type NavFooter struct {
+	Title    string `yaml:"title"`
+	Subtitle string `yaml:"subtitle"`
+	URL      string `yaml:"url"`
 }
 
 func (n NavItem) IsEnabled() bool {

@@ -93,6 +93,19 @@ export interface FeatureCard {
   title: string;
   description: string;
   url: string;
+  /** Gradient style only: renders an action button with this label. */
+  cta_text?: string;
+  /** Gradient preset (violet | rose | amber | teal | navy); cycles when unset. */
+  gradient?: string;
+}
+
+// One alternating text/visual band below the feature grid (Ghost-style).
+export interface ShowcaseItem {
+  title: string;
+  body: string;
+  image_url?: string;
+  cta_text?: string;
+  cta_url?: string;
 }
 
 export interface BrandingConfig {
@@ -154,7 +167,9 @@ export interface BrandingConfig {
   // Landing page extras (ui-refresh-api-landing)
   quickstart_title?: string;
   quickstart_command?: string;
+  features_style?: "tint" | "gradient";
   features?: FeatureCard[];
+  showcase?: ShowcaseItem[];
 
   // Settings tab visibility (settings-tabs-visibility-control)
   hidden_settings_tabs?: string[];
