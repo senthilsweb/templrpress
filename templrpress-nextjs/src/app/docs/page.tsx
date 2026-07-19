@@ -24,6 +24,10 @@ import {
   ArticleBody,
 } from "@/components/shared/article-renderer";
 import { ArticleHeader } from "@/components/shared/article-header";
+import {
+  SidebarBrandHeader,
+  SidebarVersionFooter,
+} from "@/components/layout/sidebar-chrome";
 
 function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
@@ -238,6 +242,18 @@ function DocsContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
+  // Persist the collapsed state across visits (PrivacyShield pattern).
+  useEffect(() => {
+    const stored = window.localStorage.getItem("templrpress.docs.sidebarOpen");
+    if (stored !== null) setSidebarOpen(stored !== "0");
+  }, []);
+  useEffect(() => {
+    window.localStorage.setItem(
+      "templrpress.docs.sidebarOpen",
+      sidebarOpen ? "1" : "0",
+    );
+  }, [sidebarOpen]);
+
   /* ---- Resizable sidebar (desktop only) ---- */
   const SIDEBAR_MIN = 220;
   const SIDEBAR_MAX = 560;
@@ -427,10 +443,7 @@ function DocsContent() {
   const sidebarContent = (
     <>
       {/* header */}
-      <div className="border-b border-white/10 p-5 pb-4 pt-6">
-        <h2 className="text-lg font-bold">Documentation</h2>
-        <p className="text-sm opacity-70">Guides &amp; references</p>
-      </div>
+      <SidebarBrandHeader subtitle="Documentation" />
 
       {/* search */}
       <div className="border-b border-white/10 px-4 py-3">
@@ -510,6 +523,9 @@ function DocsContent() {
           </>
         )}
       </div>
+
+      {/* static footer — version + GitHub (PrivacyShield pattern) */}
+      <SidebarVersionFooter />
     </>
   );
 
@@ -538,29 +554,30 @@ function DocsContent() {
 
       {/* ===== DESKTOP SIDEBAR ===== */}
       <aside
-        style={{ width: sidebarOpen ? `${sidebarWidth}px` : "60px" }}
+        style={{ width: sidebarOpen ? `${sidebarWidth}px` : "64px" }}
         className={`relative hidden flex-col text-white shadow-lg md:flex sidebar-themed ${
           isResizing ? "" : "transition-[width] duration-300"
         }`}
       >
-        <button
-          onClick={() => setSidebarOpen((v) => !v)}
-          className="absolute right-3 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/30 bg-transparent text-white transition-all hover:border-white/50 hover:bg-white/10"
-        >
-          <ChevronLeft
-            className={`h-4 w-4 transition-transform duration-300 ${
-              !sidebarOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-
-        <div
-          className={`flex flex-col h-full overflow-hidden transition-opacity duration-300 ${
-            sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          {sidebarContent}
-        </div>
+        {sidebarOpen ? (
+          <div className="flex h-full flex-col overflow-hidden">
+            {sidebarContent}
+          </div>
+        ) : (
+          /* Collapsed icon rail (PrivacyShield pattern): mark on top,
+             version footer icons pinned to the bottom. */
+          <div className="flex h-full flex-col overflow-hidden">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              title="Expand sidebar"
+              className="w-full"
+            >
+              <SidebarBrandHeader collapsed />
+            </button>
+            <div className="flex-1" />
+            <SidebarVersionFooter collapsed />
+          </div>
+        )}
 
         {/* Drag gutter — only when expanded */}
         {sidebarOpen && (
@@ -582,6 +599,24 @@ function DocsContent() {
 
       {/* ===== MAIN CONTENT ===== */}
       <main className="flex flex-1 flex-col overflow-hidden bg-white dark:bg-gray-900">
+        {/* Content toolbar — hamburger toggles the sidebar (PrivacyShield pattern) */}
+        <div className="flex shrink-0 items-center gap-2 border-b border-gray-200 px-3 py-1.5 dark:border-gray-700">
+          <button
+            onClick={() => setSidebarOpen((v) => !v)}
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+            className="hidden h-8 w-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 md:inline-flex dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 md:hidden dark:text-gray-400 dark:hover:bg-gray-800"
+          >
+            <Menu className="h-4 w-4" />
+            Docs
+          </button>
+        </div>
+
         {!article ? (
           loading ? (
             <div className="flex flex-1 items-center justify-center">
@@ -592,17 +627,6 @@ function DocsContent() {
           )
         ) : (
           <>
-            {/* Mobile hamburger */}
-            <div className="flex items-center border-b border-gray-200 px-4 py-2 md:hidden dark:border-gray-700">
-              <button
-                onClick={() => setMobileSidebarOpen(true)}
-                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-              >
-                <Menu className="h-4 w-4" />
-                Docs
-              </button>
-            </div>
-
             {/* Article header */}
             <ArticleHeader
               title={article.frontmatter.title}

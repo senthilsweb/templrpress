@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "node_count": 290,
+  "edge_count": 634,
+  "module_count": 11,
+  "modules": {
+    "internal/cms": {
+      "entry_files": [
+        "cms.go"
+      ],
+      "labels": [
+        "cms.go",
+        "Article",
+        "frontmatterRaw",
+        "Source",
+        "Loader",
+        "New()"
+      ],
+      "calls": [],
+      "called_by": [
+        "internal/server",
+        "templrpress-nextjs/src/lib",
+        "cmd/root.go",
+        "templrpress-nextjs/src/app",
+        "templrpress-nextjs/src/components",
+        "scripts/graphify-build.py",
+        "scripts/graphify-index.py"
+      ]
+    },
+    "internal/server": {
+      "entry_files": [
+        "api.go",
+        "pdf.go",
+        "server.go"
+      ],
+      "labels": [
+        "server.go",
+        "Assets",
+        "Server",
+        "New()",
+        "buildLoader()",
+        "emptyFS"
+      ],
+      "calls": [
+        "internal/cms",
+        "templrpress-nextjs/src/app",
+        "internal/config"
+      ],
+      "called_by": [
+        "cmd/root.go"
+      ]
+    },
+    "templrpress-nextjs/src/components": {
+      "entry_files": [
+        "api-tester.tsx",
+        "app-shell.tsx",
+        "arch-diagram.tsx",
+        "article-header.tsx",
+        "article-renderer.tsx",
+        "badge.tsx"
+      ],
+      "labels": [
+        "cn()",
+        "normalizeIcon()",
+        "normalizeConfig()",
+        "card.tsx",
+        "CardDescription()",
+        "CardFooter()"
+      ],
+      "calls": [
+        "templrpress-nextjs/src/providers",
+        "templrpress-nextjs/src/lib",
+        "internal/config",
+        "internal/cms"
+      ],
+      "called_by": [
+        "templrpress-nextjs/src/lib"
+      ]
+    },
+    "templrpress-nextjs/src/lib": {
+      "entry_files": [
+        "api.ts",
+        "config.ts",
+        "event-bus.ts",
+        "export-csv.ts",
+        "openapi-overlay.ts",
+        "utils.ts"
+      ],
+      "labels": [
+        "utils.ts",
+        "cn()",
+        "openapi-overlay.ts",
+        "safeKey()",
+        "loadOverlay()",
+        "saveOverlay()"
+      ],
+      "calls": [
+        "internal/cms",
+        "templrpress-nextjs/src/components"
+      ],
+      "called_by": [
+        "templrpress-nextjs/src/components"
+      ]
+    },
+    "cmd/root.go": {
+      "entry_files": [
+        "root.go"
+      ],
+      "labels": [
+        "root.go",
+        "Execute()",
+        "printHelp()",
+        "runServe()",
+        "runInit()"
+      ],
+      "calls": [
+        "internal/config",
+        "internal/cms",
+        "internal/banner",
+        "internal/server"
+      ],
+      "called_by": []
+    },
+    "internal/banner": {
+      "entry_files": [
+        "banner.go"
+      ],
+      "labels": [
+        "banner.go",
+        "Print()",
+        "printRow()",
+        "collectFeatureFlags()"
+      ],
+      "calls": [],
+      "called_by": [
+        "scripts/graphify-index.py",
+        "cmd/root.go",
+        "scripts/graphify-build.py"
+      ]
+    },
+    "internal/config": {
+      "entry_files": [
+        "config.go"
+      ],
+      "labels": [
+        "config.go",
+        "Config",
+        "OpenAPISpecEntry",
+        "SiteConfig",
+        "ServerConfig",
+        "BrandingConfig"
+      ],
+      "calls": [],
+      "called_by": [
+        "cmd/root.go",
+        "templrpress-nextjs/src/components",
+        "internal/server"
+      ]
+    },
+    "scripts/graphify-index.py": {
+      "entry_files": [
+        "graphify-index.py"
+      ],
+      "labels": [
+        "graphify-index.py",
+        "module_for()",
+        "build_index()",
+        "main()",
+        "Return the module key for a given file path, or None if unrecognised."
+      ],
+      "calls": [
+        "internal/banner",
+        "internal/cms"
+      ],
+      "called_by": []
+    },
+    "templrpress-nextjs/src/app": {
+      "entry_files": [
+        "error.tsx",
+        "layout.tsx",
+        "not-found.tsx",
+        "page.tsx"
+      ],
+      "labels": [
+        "page.tsx",
+        "layout.tsx",
+        "RootLayout()",
+        "error.tsx",
+        "GlobalError()",
+        "QuickstartStrip()"
+      ],
+      "calls": [
+        "internal/cms"
+      ],
+      "called_by": [
+        "internal/server"
+      ]
+    },
+    "templrpress-nextjs/src/providers": {
+      "entry_files": [
+        "config-provider.tsx",
+        "providers.tsx",
+        "theme-provider.tsx"
+      ],
+      "labels": [
+        "theme-provider.tsx",
+        "ThemeProvider()",
+        "useTheme()",
+        "config-provider.tsx",
+        "ConfigProvider()",
+        "useConfig()"
+      ],
+      "calls": [],
+      "called_by": [
+        "templrpress-nextjs/src/components"
+      ]
+    },
+    "scripts/graphify-build.py": {
+      "entry_files": [
+        "graphify-build.py"
+      ],
+      "labels": [
+        "graphify-build.py",
+        "main()"
+      ],
+      "calls": [
+        "internal/banner",
+        "internal/cms"
+      ],
+      "called_by": []
+    }
+  }
+}

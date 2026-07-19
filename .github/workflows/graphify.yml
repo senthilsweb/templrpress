@@ -1,0 +1,127 @@
+name: Graphify Knowledge Graph
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.go'
+      - 'templrpress-nextjs/src/**'
+      - 'cmd/**'
+      - 'internal/**'
+      - 'content/**'
+      - 'scripts/**'
+      - '.github/workflows/graphify.yml'
+  schedule:
+    # Weekly full rebuild — Mondays 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: graphify
+  cancel-in-progress: true
+
+jobs:
+  graphify:
+    if: "!contains(github.event.head_commit.message, '[skip graphify]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GRAPHIFY_VERSION: '0.4.23'
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install graphify
+        run: |
+          pip install --upgrade pip
+          pip install "graphifyy==${GRAPHIFY_VERSION}"
+          graphify --help >/dev/null
+
+      - name: Regenerate knowledge graph
+        id: gen
+        continue-on-error: true
+        run: |
+          set -e
+          # CI runs graphify's deterministic, no-LLM portion: AST/structural
+          # extraction (imports/calls/defines across the whole repo). That is
+          # exactly what graphify-index.py needs for the token-cheap slice.
+          python scripts/graphify-build.py "${GITHUB_WORKSPACE:-.}"
+          cp graphify-out/graph.json graph.json
+          python scripts/graphify-index.py graph.json graph-index.json
+          ls -la graph.json graph-index.json
+
+      - name: Commit graph JSON to main
+        if: steps.gen.outcome == 'success'
+        run: |
+          set -e
+          git config user.name "graphify-bot"
+          git config user.email "graphify-bot@templrpress.local"
+          git add graph.json graph-index.json
+          if git diff --cached --quiet; then
+            echo "Graph unchanged; nothing to commit."
+            exit 0
+          fi
+          # [skip graphify] prevents this commit from re-triggering the job;
+          # [skip ci] keeps it from triggering the docker build workflow.
+          git commit -m "chore(graphify): update knowledge graph for ${GITHUB_SHA::7} [skip graphify] [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload artifacts (always, for debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphify-output-${{ github.run_id }}
+          path: |
+            graph.json
+            graph-index.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Open or update tracking issue on failure
+        if: steps.gen.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Graphify run failed';
+            const body = [
+              `Latest failure on commit \`${context.sha.substring(0,7)}\`.`,
+              ``,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              ``,
+              `This issue is auto-updated. \`main\` pushes are NOT blocked by graphify failures.`
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'graphify-failure',
+              per_page: 5,
+            });
+            if (issues.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['graphify-failure', 'automation'],
+              });
+            } else {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body,
+              });
+            }

@@ -23,3 +23,7 @@ templrpress-nextjs/out/*
 !templrpress-nextjs/out/.gitkeep
 templrpress-nextjs/tsconfig.tsbuildinfo
 templrpress-nextjs/next-env.d.ts
+
+# Graphify intermediate output (final graph.json / graph-index.json are committed at repo root by CI)
+graphify-out/
+.graphify-local/
