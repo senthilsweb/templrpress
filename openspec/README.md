@@ -13,7 +13,7 @@ with three files:
 | Change ID | Summary | Status |
 |-----------|---------|--------|
 | [`openapi-disk-fallback`](changes/openapi-disk-fallback/proposal.md) | Disk fallback in `handleOpenAPISpec` so volume-mounted spec files work without rebuilding the binary | implemented |
-| [`ui-refresh-api-landing`](changes/ui-refresh-api-landing/proposal.md) | API page column geometry + full-height divider, Sheet form standard adoption, config-driven landing page polish | proposed |
+| [`ui-refresh-api-landing`](changes/ui-refresh-api-landing/proposal.md) | API page column geometry + full-height divider, Sheet form standard adoption, config-driven landing page polish | implemented (v0.4.0) |
 
 ## Project north star
 

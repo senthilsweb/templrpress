@@ -66,4 +66,4 @@
 - [x] 16. `openspec/README.md` — add this change to Active changes; fix the
        stale north-star table (stack is Next.js/React SPA + Go, not
        "Tailwind + Swagger UI via CDN / no React").
-- [ ] 17. CI green on `main`.
+- [x] 17. CI green on `main`.
