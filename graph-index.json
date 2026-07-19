@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "node_count": 290,
-  "edge_count": 640,
+  "node_count": 303,
+  "edge_count": 681,
   "module_count": 11,
   "modules": {
     "internal/cms": {
@@ -20,9 +20,9 @@
       "called_by": [
         "internal/server",
         "templrpress-nextjs/src/lib",
+        "cmd/root.go",
         "templrpress-nextjs/src/components",
         "templrpress-nextjs/src/app",
-        "cmd/root.go",
         "scripts/graphify-index.py",
         "scripts/graphify-build.py"
       ]
@@ -30,6 +30,7 @@
     "internal/server": {
       "entry_files": [
         "api.go",
+        "meta.go",
         "pdf.go",
         "server.go"
       ],
@@ -43,12 +44,32 @@
       ],
       "calls": [
         "internal/cms",
-        "internal/config",
-        "templrpress-nextjs/src/app"
+        "templrpress-nextjs/src/app",
+        "internal/config"
       ],
       "called_by": [
         "cmd/root.go"
       ]
+    },
+    "cmd/root.go": {
+      "entry_files": [
+        "root.go"
+      ],
+      "labels": [
+        "root.go",
+        "Execute()",
+        "printHelp()",
+        "runServe()",
+        "runLLMs()",
+        "runInit()"
+      ],
+      "calls": [
+        "internal/config",
+        "internal/cms",
+        "internal/banner",
+        "internal/server"
+      ],
+      "called_by": []
     },
     "templrpress-nextjs/src/components": {
       "entry_files": [
@@ -120,29 +141,10 @@
         "internal/cms"
       ],
       "called_by": [
+        "internal/server",
         "templrpress-nextjs/src/components",
-        "templrpress-nextjs/src/lib",
-        "internal/server"
+        "templrpress-nextjs/src/lib"
       ]
-    },
-    "cmd/root.go": {
-      "entry_files": [
-        "root.go"
-      ],
-      "labels": [
-        "root.go",
-        "Execute()",
-        "printHelp()",
-        "runServe()",
-        "runInit()"
-      ],
-      "calls": [
-        "internal/config",
-        "internal/cms",
-        "internal/banner",
-        "internal/server"
-      ],
-      "called_by": []
     },
     "internal/banner": {
       "entry_files": [
@@ -156,9 +158,28 @@
       ],
       "calls": [],
       "called_by": [
-        "scripts/graphify-index.py",
         "cmd/root.go",
+        "scripts/graphify-index.py",
         "scripts/graphify-build.py"
+      ]
+    },
+    "internal/config": {
+      "entry_files": [
+        "config.go"
+      ],
+      "labels": [
+        "config.go",
+        "Config",
+        "OpenAPISpecEntry",
+        "SiteConfig",
+        "ServerConfig",
+        "BrandingConfig"
+      ],
+      "calls": [],
+      "called_by": [
+        "cmd/root.go",
+        "templrpress-nextjs/src/components",
+        "internal/server"
       ]
     },
     "scripts/graphify-index.py": {
@@ -177,25 +198,6 @@
         "internal/cms"
       ],
       "called_by": []
-    },
-    "internal/config": {
-      "entry_files": [
-        "config.go"
-      ],
-      "labels": [
-        "config.go",
-        "Config",
-        "OpenAPISpecEntry",
-        "SiteConfig",
-        "ServerConfig",
-        "BrandingConfig"
-      ],
-      "calls": [],
-      "called_by": [
-        "templrpress-nextjs/src/components",
-        "cmd/root.go",
-        "internal/server"
-      ]
     },
     "templrpress-nextjs/src/providers": {
       "entry_files": [

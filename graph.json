@@ -1337,28 +1337,35 @@
       "label": "Execute()",
       "file_type": "code",
       "source_file": "cmd/root.go",
-      "source_location": "L22"
+      "source_location": "L23"
     },
     {
       "id": "root_printhelp",
       "label": "printHelp()",
       "file_type": "code",
       "source_file": "cmd/root.go",
-      "source_location": "L44"
+      "source_location": "L47"
     },
     {
       "id": "root_runserve",
       "label": "runServe()",
       "file_type": "code",
       "source_file": "cmd/root.go",
-      "source_location": "L66"
+      "source_location": "L70"
+    },
+    {
+      "id": "root_runllms",
+      "label": "runLLMs()",
+      "file_type": "code",
+      "source_file": "cmd/root.go",
+      "source_location": "L126"
     },
     {
       "id": "root_runinit",
       "label": "runInit()",
       "file_type": "code",
       "source_file": "cmd/root.go",
-      "source_location": "L119"
+      "source_location": "L169"
     },
     {
       "id": "scripts_graphify_index_py",
@@ -1802,6 +1809,97 @@
       "source_location": "L185"
     },
     {
+      "id": "internal_server_meta_go",
+      "label": "meta.go",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L1"
+    },
+    {
+      "id": "server_pagemeta",
+      "label": "pageMeta",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L19"
+    },
+    {
+      "id": "server_server",
+      "label": "Server",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L37"
+    },
+    {
+      "id": "server_server_blogfolder",
+      "label": ".blogFolder()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L37"
+    },
+    {
+      "id": "server_server_baseurl",
+      "label": ".baseURL()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L46"
+    },
+    {
+      "id": "meta_absolutize",
+      "label": "absolutize()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L60"
+    },
+    {
+      "id": "server_server_articlefor",
+      "label": ".articleFor()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L69"
+    },
+    {
+      "id": "server_server_metafor",
+      "label": ".metaFor()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L92"
+    },
+    {
+      "id": "meta_injectmeta",
+      "label": "injectMeta()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L134"
+    },
+    {
+      "id": "server_server_servehtmlwithmeta",
+      "label": ".serveHTMLWithMeta()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L193"
+    },
+    {
+      "id": "server_server_spahtmlfor",
+      "label": ".spaHTMLFor()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L206"
+    },
+    {
+      "id": "server_server_handlellmstxt",
+      "label": ".handleLLMsTxt()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L225"
+    },
+    {
+      "id": "server_server_llmstxt",
+      "label": ".LLMsTxt()",
+      "file_type": "code",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L233"
+    },
+    {
       "id": "internal_server_server_go",
       "label": "server.go",
       "file_type": "code",
@@ -1869,28 +1967,28 @@
       "label": ".spaHandler()",
       "file_type": "code",
       "source_file": "internal/server/server.go",
-      "source_location": "L159"
+      "source_location": "L162"
     },
     {
       "id": "server_server_spafileexists",
       "label": ".spaFileExists()",
       "file_type": "code",
       "source_file": "internal/server/server.go",
-      "source_location": "L190"
+      "source_location": "L199"
     },
     {
       "id": "server_logrequests",
       "label": "logRequests()",
       "file_type": "code",
       "source_file": "internal/server/server.go",
-      "source_location": "L207"
+      "source_location": "L216"
     },
     {
       "id": "server_humanizesection",
       "label": "humanizeSection()",
       "file_type": "code",
       "source_file": "internal/server/server.go",
-      "source_location": "L217"
+      "source_location": "L226"
     },
     {
       "id": "internal_cms_cms_go",
@@ -5448,16 +5546,16 @@
     },
     {
       "source": "cmd_root_go",
-      "target": "banner",
+      "target": "strings",
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
       "source": "cmd_root_go",
-      "target": "config",
+      "target": "banner",
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
@@ -5466,7 +5564,7 @@
     },
     {
       "source": "cmd_root_go",
-      "target": "server",
+      "target": "config",
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
@@ -5475,11 +5573,20 @@
     },
     {
       "source": "cmd_root_go",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "cmd/root.go",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "cmd_root_go",
       "target": "root_execute",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -5488,7 +5595,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L44",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -5497,7 +5604,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L66",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "cmd_root_go",
+      "target": "root_runllms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "cmd/root.go",
+      "source_location": "L126",
       "weight": 1.0
     },
     {
@@ -5506,7 +5622,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L119",
+      "source_location": "L169",
       "weight": 1.0
     },
     {
@@ -5515,7 +5631,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -5524,7 +5640,16 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L34",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "root_execute",
+      "target": "root_runllms",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "cmd/root.go",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -5533,7 +5658,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "cmd/root.go",
-      "source_location": "L36",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -6734,6 +6859,258 @@
       "weight": 1.0
     },
     {
+      "source": "internal_server_meta_go",
+      "target": "fmt",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "html",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "http",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "regexp",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "strings",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "time",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "cms",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "server_pagemeta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_blogfolder",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_baseurl",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "meta_absolutize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_articlefor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_metafor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "internal_server_meta_go",
+      "target": "meta_injectmeta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_servehtmlwithmeta",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L193",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_spahtmlfor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_handlellmstxt",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L225",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server",
+      "target": "server_server_llmstxt",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_articlefor",
+      "target": "server_server_blogfolder",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_metafor",
+      "target": "server_server_baseurl",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_metafor",
+      "target": "meta_absolutize",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_metafor",
+      "target": "server_server_articlefor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_servehtmlwithmeta",
+      "target": "meta_injectmeta",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_servehtmlwithmeta",
+      "target": "server_server_metafor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_handlellmstxt",
+      "target": "server_server_llmstxt",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_handlellmstxt",
+      "target": "server_server_baseurl",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_llmstxt",
+      "target": "server_server_blogfolder",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "internal/server/meta.go",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
       "source": "internal_server_server_go",
       "target": "embed",
       "relation": "imports_from",
@@ -6892,7 +7269,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/server.go",
-      "source_location": "L159",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -6901,7 +7278,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/server.go",
-      "source_location": "L190",
+      "source_location": "L199",
       "weight": 1.0
     },
     {
@@ -6910,7 +7287,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/server.go",
-      "source_location": "L207",
+      "source_location": "L216",
       "weight": 1.0
     },
     {
@@ -6919,7 +7296,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/server.go",
-      "source_location": "L217",
+      "source_location": "L226",
       "weight": 1.0
     },
     {
@@ -6955,7 +7332,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/server.go",
-      "source_location": "L153",
+      "source_location": "L156",
       "weight": 1.0
     },
     {
@@ -6964,7 +7341,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/server.go",
-      "source_location": "L168",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -7609,7 +7986,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "cmd/root.go",
-      "source_location": "L87",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
@@ -7619,7 +7996,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "cmd/root.go",
-      "source_location": "L105",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -7629,7 +8006,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "cmd/root.go",
-      "source_location": "L115",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -7639,7 +8016,47 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "cmd/root.go",
-      "source_location": "L116",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "root_runllms",
+      "target": "config_load",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "cmd/root.go",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "root_runllms",
+      "target": "cms_new",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "cmd/root.go",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "root_runllms",
+      "target": "server_server_llmstxt",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "cmd/root.go",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "root_runllms",
+      "target": "banner_print",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "cmd/root.go",
+      "source_location": "L159",
       "weight": 1.0
     },
     {
@@ -7843,6 +8260,46 @@
       "weight": 1.0
     },
     {
+      "source": "server_server_baseurl",
+      "target": "cms_loader_get",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/server/meta.go",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_articlefor",
+      "target": "cms_loader_get",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/server/meta.go",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_servehtmlwithmeta",
+      "target": "not_found_notfound",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/server/meta.go",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_llmstxt",
+      "target": "cms_loader_infolder",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/server/meta.go",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
       "source": "server_buildloader",
       "target": "cms_newmulti",
       "relation": "calls",
@@ -7859,16 +8316,36 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/server.go",
-      "source_location": "L164",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_spahandler",
+      "target": "server_server_spahtmlfor",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/server/server.go",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "server_server_spahandler",
+      "target": "server_server_servehtmlwithmeta",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "internal/server/server.go",
+      "source_location": "L173",
       "weight": 1.0
     }
   ],
   "metadata": {
     "generator": "scripts/graphify-build.py (AST-only)",
-    "generated_at": "2026-07-19T13:37:17Z",
-    "source_sha": "9f512c769f915ff56d30d76c4c428cb586e392b7",
+    "generated_at": "2026-07-19T15:05:28Z",
+    "source_sha": "b6d0156f7fb839d2f279858e3ec4ada5da718195",
     "source_ref": "refs/heads/main",
-    "node_count": 294,
-    "edge_count": 640
+    "node_count": 308,
+    "edge_count": 681
   }
 }
