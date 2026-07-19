@@ -1,0 +1,44 @@
+# TemplrPress — production deployment template (image-only, no build).
+#
+# Usage: copy this file together with a config.yaml and a content/ folder
+# into a dedicated deploy directory, then `docker compose -f docker-compose.prod.yaml up -d`.
+#
+#   deploy-dir/
+#   ├── docker-compose.prod.yaml
+#   ├── config.yaml    # set site.url to your public domain — it drives
+#   │                  # canonical links and Open Graph/Twitter card URLs
+#   ├── content/       # docs/, blog/, about.md — live-editable, no rebuild
+#   └── openapi/       # extra OpenAPI spec files (register in config.yaml)
+#
+# For live content edits without an image rebuild, point the cms block at
+# the mounted folder (REPLACE mode):
+#
+#   cms:
+#     source: "./content"
+#     cache_ttl: "30s"
+#     folders:
+#       docs: { source: "./content/docs" }
+#       blog: { source: "./content/blog" }
+#
+# The container listens on 5000. Map any free host port and point your
+# reverse proxy (TLS termination) at it — on macOS avoid host port 5000,
+# which AirPlay Receiver occupies.
+
+services:
+  templrpress:
+    image: ghcr.io/senthilsweb/templrpress:latest
+    container_name: templrpress
+    restart: unless-stopped
+    ports:
+      - "5858:5000"
+    environment:
+      - TEMPLRPRESS_CONFIG=/app/config.yaml
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./content:/app/content:ro
+      - ./openapi:/app/static/openapi:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:5000/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
