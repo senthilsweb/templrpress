@@ -1174,21 +1174,25 @@ function RestApiSpecPageInner() {
         </div>
 
         {selectedEndpoint ? (
-          <div className="flex">
+          <div className="flex items-stretch min-h-[calc(100vh-97px)]">
             {/* Endpoint detail */}
-            <div className="flex-1 p-6 max-w-3xl">
+            <div className="flex-1 min-w-0 p-6 lg:p-8 max-w-4xl xl:max-w-5xl">
               <EndpointDetail entry={selectedEndpoint} spec={spec} overrideBadge={overrideBadge} />
             </div>
 
-            {/* Code panel - right side, hidden on small screens */}
-            <div className="hidden lg:block w-[420px] flex-shrink-0 border-l p-5 sticky top-12 self-start max-h-[calc(100vh-56px-48px)] overflow-y-auto">
-              <CodePanel
-                method={selectedEndpoint.method}
-                path={selectedEndpoint.path}
-                operation={selectedEndpoint.operation}
-                spec={spec}
-                onTryIt={() => setTesterOpen(true)}
-              />
+            {/* Code panel - right side, hidden on small screens.
+                The border lives on this stretched wrapper (not the sticky
+                scroller) so the divider always spans the full row height. */}
+            <div className="hidden lg:block w-[360px] xl:w-[400px] flex-shrink-0 border-l">
+              <div className="sticky top-12 max-h-[calc(100vh-56px-48px)] overflow-y-auto p-5">
+                <CodePanel
+                  method={selectedEndpoint.method}
+                  path={selectedEndpoint.path}
+                  operation={selectedEndpoint.operation}
+                  spec={spec}
+                  onTryIt={() => setTesterOpen(true)}
+                />
+              </div>
             </div>
           </div>
         ) : (

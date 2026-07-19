@@ -13,16 +13,17 @@ with three files:
 | Change ID | Summary | Status |
 |-----------|---------|--------|
 | [`openapi-disk-fallback`](changes/openapi-disk-fallback/proposal.md) | Disk fallback in `handleOpenAPISpec` so volume-mounted spec files work without rebuilding the binary | implemented |
+| [`ui-refresh-api-landing`](changes/ui-refresh-api-landing/proposal.md) | API page column geometry + full-height divider, Sheet form standard adoption, config-driven landing page polish | proposed |
 
 ## Project north star
 
 TemplrPress stays **small** on purpose:
 
-| Allowed                                  | Not allowed                            |
-|------------------------------------------|----------------------------------------|
-| Markdown-driven pages                    | Databases (BoltDB, SQLite, Postgres)   |
-| YAML configuration                       | Login / signup / OAuth / RBAC          |
-| Tailwind + Swagger UI via CDN            | Next.js, React, or other JS frameworks |
-| Go stdlib + `goldmark` + `yaml.v3`       | Background workers, queues, schedulers |
+| Allowed                                            | Not allowed                            |
+|-----------------------------------------------------|----------------------------------------|
+| Markdown-driven pages                               | Databases (BoltDB, SQLite, Postgres)   |
+| YAML configuration                                  | Login / signup / OAuth / RBAC          |
+| The embedded Next.js SPA (static export, Tailwind, shadcn/ui) | Runtime CDN assets or a second frontend |
+| Go stdlib + `goldmark` + `yaml.v3`                  | Background workers, queues, schedulers |
 
 When in doubt, **say no** and ship a smaller change.

@@ -7,7 +7,7 @@ import { useTheme } from "@/providers/theme-provider";
 export function Logo() {
   const { branding } = useConfig();
   const { darkMode } = useTheme();
-  const appName = branding?.app_name || "TemplrGo";
+  const appName = branding?.app_name || "TemplrPress";
 
   const isDark = darkMode;
   const logoSrc = isDark && branding?.logo_dark_url

@@ -17,9 +17,13 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import {
+  SheetFormField,
+  SheetFormSection,
+} from "@/components/ui/sheet-form";
 import { toast } from "sonner";
+import { useConfig } from "@/providers/config-provider";
 import {
   EMPTY_OVERLAY,
   HeaderRow,
@@ -49,6 +53,8 @@ export function SpecSettingsSheet({
   specServerUrl,
   onChanged,
 }: Props) {
+  const { branding } = useConfig();
+  const appName = branding?.app_name || "TemplrPress";
   const [draft, setDraft] = useState<SpecOverlay>(EMPTY_OVERLAY);
   const [revealed, setRevealed] = useState<Record<number, boolean>>({});
 
@@ -111,18 +117,18 @@ export function SpecSettingsSheet({
 
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
           {/* Base URL */}
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold">Base URL</h3>
+          <SheetFormSection title="Base URL">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span>Spec declares:</span>
               <Badge variant="outline" className="font-mono">
                 {specServerUrl || "(same origin)"}
               </Badge>
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="base-url-override" className="text-xs">
-                Override
-              </Label>
+            <SheetFormField
+              label="Override"
+              htmlFor="base-url-override"
+              hint="Leave blank to use the spec's declared server URL."
+            >
               <Input
                 id="base-url-override"
                 placeholder="https://staging.example.com"
@@ -132,15 +138,11 @@ export function SpecSettingsSheet({
                 }
                 className="font-mono"
               />
-              <p className="text-[11px] text-muted-foreground">
-                Leave blank to use the spec&apos;s declared server URL.
-              </p>
-            </div>
-          </section>
+            </SheetFormField>
+          </SheetFormSection>
 
           {/* Global headers */}
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold">Global headers</h3>
+          <SheetFormSection title="Global headers">
             <p className="text-xs text-muted-foreground">
               Sent on every Try-It request for this spec. User-typed headers in
               the form still take precedence.
@@ -205,12 +207,12 @@ export function SpecSettingsSheet({
                 <Plus className="h-3.5 w-3.5" /> Add header
               </Button>
             </div>
-          </section>
+          </SheetFormSection>
 
           {/* Note about persistence (Reset action moved to the footer) */}
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-[10px] text-muted-foreground">
             Settings are stored in this browser&apos;s localStorage only. Token
-            values are never sent to the TemplrGo backend.
+            values are never sent to the {appName} backend.
           </p>
         </div>
 

@@ -87,6 +87,14 @@ export function flattenNavChildren(item: NavItem): NavItem[] {
   return [];
 }
 
+// One config-driven card on the landing page feature grid.
+export interface FeatureCard {
+  icon: string;
+  title: string;
+  description: string;
+  url: string;
+}
+
 export interface BrandingConfig {
   app_name: string;
   page_title: string;
@@ -142,6 +150,11 @@ export interface BrandingConfig {
   hero_cta_secondary_url?: string;
   home_route?: string;
   hidden_landing_sections?: string[];
+
+  // Landing page extras (ui-refresh-api-landing)
+  quickstart_title?: string;
+  quickstart_command?: string;
+  features?: FeatureCard[];
 
   // Settings tab visibility (settings-tabs-visibility-control)
   hidden_settings_tabs?: string[];

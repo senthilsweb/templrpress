@@ -116,6 +116,10 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 		"hero_cta_secondary_text": b.HeroCTA2Text,
 		"hero_cta_secondary_url":  b.HeroCTA2URL,
 
+		"quickstart_title":   b.QuickstartTitle,
+		"quickstart_command": b.QuickstartCommand,
+		"features":           featureCards(b.Features),
+
 		"footer_credit_prefix":    s.cfg.Footer.CreditPrefix,
 		"footer_credit_link_text": s.cfg.Footer.CreditText,
 		"footer_credit_link_url":  s.cfg.Footer.CreditURL,
@@ -129,6 +133,21 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 		"footer_columns":          s.cfg.Footer.Columns,
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"branding": branding})
+}
+
+// featureCards maps config feature cards to the JSON shape the SPA expects.
+// Returns an empty slice (not null) when unset so clients can length-check.
+func featureCards(cards []config.FeatureCard) []map[string]string {
+	out := make([]map[string]string, 0, len(cards))
+	for _, c := range cards {
+		out = append(out, map[string]string{
+			"icon":        c.Icon,
+			"title":       c.Title,
+			"description": c.Description,
+			"url":         c.URL,
+		})
+	}
+	return out
 }
 
 func (s *Server) handleConfigServers(w http.ResponseWriter, r *http.Request) {

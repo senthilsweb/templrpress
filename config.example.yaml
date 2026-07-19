@@ -29,6 +29,26 @@ branding:
   hero_cta_secondary_text: "View Blog"
   hero_cta_secondary_url: "/blog"
 
+  # Optional quickstart strip under the hero CTAs (hidden when command is unset).
+  quickstart_title: "Run it in one line"
+  quickstart_command: "docker run --rm -p 5000:5000 ghcr.io/senthilsweb/templrpress:latest"
+
+  # Optional feature cards. Omit the whole list to keep the built-in three.
+  # icon: book-open | code | file-text | zap | rocket | layers | globe | terminal
+  # features:
+  #   - icon: book-open
+  #     title: "Markdown Docs"
+  #     description: "Three-column docs with section sidebar, table of contents, and live heading scroll-tracking."
+  #     url: "/docs"
+  #   - icon: code
+  #     title: "API Explorer"
+  #     description: "Multi-spec OpenAPI viewer with cURL, JavaScript, and Python code examples plus a Try It button."
+  #     url: "/rest-api-spec"
+  #   - icon: file-text
+  #     title: "Custom Pages"
+  #     description: "Author landing copy, about, or any markdown page. Frontmatter drives metadata and ordering."
+  #     url: "/about"
+
 # ---------------------------------------------------------------------------
 # CMS — markdown content loader. Mirrors templrgo's `cms:` block.
 #

@@ -63,6 +63,23 @@ type BrandingConfig struct {
 	HeroCTAURL    string `yaml:"hero_cta_primary_url"`
 	HeroCTA2Text  string `yaml:"hero_cta_secondary_text"`
 	HeroCTA2URL   string `yaml:"hero_cta_secondary_url"`
+
+	// Landing page extras. All optional: an empty QuickstartCommand hides
+	// the quickstart strip; a nil Features list keeps the SPA's built-in
+	// default cards.
+	QuickstartTitle   string        `yaml:"quickstart_title"`
+	QuickstartCommand string        `yaml:"quickstart_command"`
+	Features          []FeatureCard `yaml:"features"`
+}
+
+// FeatureCard is one config-driven card on the landing page feature grid.
+// Icon accepts an allowlisted lucide name (book-open, code, file-text, zap,
+// rocket, layers, globe, terminal); unknown names fall back to file-text.
+type FeatureCard struct {
+	Icon        string `yaml:"icon"`
+	Title       string `yaml:"title"`
+	Description string `yaml:"description"`
+	URL         string `yaml:"url"`
 }
 
 // CMSConfig holds markdown content settings. Mirrors templrgo's cms: block.

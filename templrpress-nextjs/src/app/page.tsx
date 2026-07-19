@@ -1,8 +1,103 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BookOpen, Code, FileText, Zap } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  Code,
+  Copy,
+  FileText,
+  Globe,
+  Layers,
+  Rocket,
+  Terminal,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import { useConfig } from "@/providers/config-provider";
+import type { FeatureCard } from "@/lib/config";
+
+// Allowlisted icons for config-driven feature cards; unknown names fall back
+// to FileText (see openspec/changes/ui-refresh-api-landing/design.md).
+const FEATURE_ICONS: Record<string, LucideIcon> = {
+  "book-open": BookOpen,
+  code: Code,
+  "file-text": FileText,
+  zap: Zap,
+  rocket: Rocket,
+  layers: Layers,
+  globe: Globe,
+  terminal: Terminal,
+};
+
+// Icon tints cycle across cards so config-driven grids keep the same rhythm
+// as the built-in defaults.
+const CARD_TINTS = [
+  { bg: "bg-blue-100 dark:bg-blue-500/15", fg: "text-blue-600 dark:text-blue-400" },
+  { bg: "bg-amber-100 dark:bg-amber-500/15", fg: "text-amber-600 dark:text-amber-400" },
+  { bg: "bg-emerald-100 dark:bg-emerald-500/15", fg: "text-emerald-600 dark:text-emerald-400" },
+];
+
+const DEFAULT_FEATURES: FeatureCard[] = [
+  {
+    icon: "book-open",
+    title: "Markdown Docs",
+    description:
+      "Three-column docs with section sidebar, table of contents, and live heading scroll-tracking.",
+    url: "/docs",
+  },
+  {
+    icon: "code",
+    title: "API Explorer",
+    description:
+      "Multi-spec OpenAPI viewer with cURL, JavaScript, and Python code examples plus a Try It button.",
+    url: "/rest-api-spec",
+  },
+  {
+    icon: "file-text",
+    title: "Custom Pages",
+    description:
+      "Author landing copy, about, or any markdown page. Frontmatter drives metadata and ordering.",
+    url: "/about",
+  },
+];
+
+function QuickstartStrip({ title, command }: { title: string; command: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard unavailable (http origin) — silently ignore.
+    }
+  }
+
+  return (
+    <div className="mx-auto mt-12 max-w-2xl text-left">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {title}
+      </p>
+      <div className="flex items-center gap-3 rounded-xl border border-border bg-gray-950 px-4 py-3 shadow-sm dark:border-gray-800">
+        <Terminal className="h-4 w-4 flex-shrink-0 text-gray-500" />
+        <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-gray-100">
+          {command}
+        </code>
+        <button
+          onClick={copy}
+          aria-label="Copy command"
+          className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-800 hover:text-gray-100"
+        >
+          {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const { branding } = useConfig();
@@ -17,12 +112,40 @@ export default function HomePage() {
   const heroPrimaryURL = branding?.hero_cta_primary_url ?? "/docs";
   const heroSecondaryText = branding?.hero_cta_secondary_text ?? "View API";
   const heroSecondaryURL = branding?.hero_cta_secondary_url ?? "/rest-api-spec";
+  const quickstartTitle = branding?.quickstart_title || "Quickstart";
+  const quickstartCommand = branding?.quickstart_command || "";
+  const features =
+    branding?.features && branding.features.length > 0
+      ? branding.features
+      : DEFAULT_FEATURES;
 
   return (
     <div className="flex flex-col">
       {/* Hero */}
       <section className="relative overflow-hidden bg-background">
-        <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+        {/* Soft primary glow + dot grid, faded toward the edges. Pure CSS. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 55% at 50% -10%, color-mix(in srgb, var(--tg-primary) 10%, transparent), transparent)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.35] dark:opacity-[0.25]"
+          style={{
+            backgroundImage:
+              "radial-gradient(color-mix(in srgb, var(--tg-primary) 22%, transparent) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+            maskImage:
+              "radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[var(--tg-primary)]/30 bg-[var(--tg-primary)]/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--tg-primary)]">
               <Zap className="h-3 w-3" /> {heroBadge}
@@ -47,56 +170,32 @@ export default function HomePage() {
                 {heroSecondaryText}
               </Link>
             </div>
+            {quickstartCommand && (
+              <QuickstartStrip title={quickstartTitle} command={quickstartCommand} />
+            )}
           </div>
         </div>
       </section>
 
       {/* Features grid */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
+      <section className="mx-auto w-full max-w-6xl px-6 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              href: "/docs",
-              label: "Markdown Docs",
-              description:
-                "Three-column docs with section sidebar, table of contents, and live heading scroll-tracking.",
-              icon: BookOpen,
-              iconBg: "bg-blue-100 dark:bg-blue-500/15",
-              iconFg: "text-blue-600 dark:text-blue-400",
-            },
-            {
-              href: "/rest-api-spec",
-              label: "API Explorer",
-              description:
-                "Multi-spec OpenAPI viewer with cURL, JavaScript, and Python code examples plus a Try It button.",
-              icon: Code,
-              iconBg: "bg-amber-100 dark:bg-amber-500/15",
-              iconFg: "text-amber-600 dark:text-amber-400",
-            },
-            {
-              href: "/about",
-              label: "Custom Pages",
-              description:
-                "Author landing copy, about, or any markdown page. Frontmatter drives metadata and ordering.",
-              icon: FileText,
-              iconBg: "bg-emerald-100 dark:bg-emerald-500/15",
-              iconFg: "text-emerald-600 dark:text-emerald-400",
-            },
-          ].map((item) => {
-            const Icon = item.icon;
+          {features.map((item, i) => {
+            const Icon = FEATURE_ICONS[item.icon] ?? FileText;
+            const tint = CARD_TINTS[i % CARD_TINTS.length];
             return (
               <Link
-                key={item.href}
-                href={item.href}
+                key={`${item.url}-${item.title}`}
+                href={item.url}
                 className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--tg-primary)]/40 hover:shadow-md"
               >
                 <div
-                  className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.iconBg} ${item.iconFg}`}
+                  className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl ${tint.bg} ${tint.fg}`}
                 >
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 text-lg font-semibold text-foreground group-hover:text-[var(--tg-primary)]">
-                  {item.label}
+                  {item.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {item.description}
