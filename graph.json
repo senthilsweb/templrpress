@@ -1232,70 +1232,70 @@
       "label": "normalizeSpec()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L144"
+      "source_location": "L148"
     },
     {
       "id": "page_rewriteref",
       "label": "rewriteRef()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L207"
+      "source_location": "L211"
     },
     {
       "id": "page_resolveref",
       "label": "resolveRef()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L227"
+      "source_location": "L232"
     },
     {
       "id": "page_deepresolve",
       "label": "deepResolve()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L236"
+      "source_location": "L241"
     },
     {
       "id": "page_extractbodyfields",
       "label": "extractBodyFields()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L256"
+      "source_location": "L261"
     },
     {
       "id": "page_generateexamplefromschema",
       "label": "generateExampleFromSchema()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L274"
+      "source_location": "L279"
     },
     {
       "id": "page_generatecodeexamples",
       "label": "generateCodeExamples()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L307"
+      "source_location": "L312"
     },
     {
       "id": "page_normalizetag",
       "label": "normalizeTag()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L348"
+      "source_location": "L353"
     },
     {
       "id": "page_groupendpoints",
       "label": "groupEndpoints()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L364"
+      "source_location": "L369"
     },
     {
       "id": "page_push",
       "label": "push()",
       "file_type": "code",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L476"
+      "source_location": "L481"
     },
     {
       "id": "templrpress_nextjs_src_app_docs_page_tsx",
@@ -1666,84 +1666,84 @@
       "label": ".handleOpenAPISpec()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L253"
+      "source_location": "L256"
     },
     {
       "id": "server_server_servebuiltinspec",
       "label": ".serveBuiltinSpec()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L287"
+      "source_location": "L290"
     },
     {
       "id": "server_server_writespecasjson",
       "label": ".writeSpecAsJSON()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L301"
+      "source_location": "L304"
     },
     {
       "id": "api_normalizeyamlforjson",
       "label": "normalizeYAMLForJSON()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L319"
+      "source_location": "L322"
     },
     {
       "id": "server_frontmatterout",
       "label": "frontmatterOut",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L343"
+      "source_location": "L346"
     },
     {
       "id": "api_articlefrontmatter",
       "label": "articleFrontmatter()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L359"
+      "source_location": "L362"
     },
     {
       "id": "server_server_handledocsnav",
       "label": ".handleDocsNav()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L378"
+      "source_location": "L381"
     },
     {
       "id": "server_server_handlecmslist",
       "label": ".handleCMSList()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L437"
+      "source_location": "L440"
     },
     {
       "id": "server_server_handleaboutget",
       "label": ".handleAboutGet()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L468"
+      "source_location": "L471"
     },
     {
       "id": "server_server_handlecmsarticle",
       "label": ".handleCMSArticle()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L493"
+      "source_location": "L496"
     },
     {
       "id": "server_server_writearticle",
       "label": ".writeArticle()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L515"
+      "source_location": "L518"
     },
     {
       "id": "api_firstnonempty",
       "label": "firstNonEmpty()",
       "file_type": "code",
       "source_file": "internal/server/api.go",
-      "source_location": "L525"
+      "source_location": "L528"
     },
     {
       "id": "internal_server_pdf_go",
@@ -5124,7 +5124,7 @@
     },
     {
       "source": "templrpress_nextjs_src_app_rest_api_spec_page_tsx",
-      "target": "tooltip",
+      "target": "sidebar_chrome",
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
@@ -5133,11 +5133,20 @@
     },
     {
       "source": "templrpress_nextjs_src_app_rest_api_spec_page_tsx",
+      "target": "tooltip",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "templrpress_nextjs_src_app_rest_api_spec_page_tsx",
       "target": "select",
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L27",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -5146,7 +5155,7 @@
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L34",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -5155,7 +5164,7 @@
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L35",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -5164,7 +5173,7 @@
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L36",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -5173,7 +5182,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L144",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -5182,7 +5191,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L207",
+      "source_location": "L211",
       "weight": 1.0
     },
     {
@@ -5191,7 +5200,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L227",
+      "source_location": "L232",
       "weight": 1.0
     },
     {
@@ -5200,7 +5209,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L236",
+      "source_location": "L241",
       "weight": 1.0
     },
     {
@@ -5209,7 +5218,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L256",
+      "source_location": "L261",
       "weight": 1.0
     },
     {
@@ -5218,7 +5227,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L274",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -5227,7 +5236,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L307",
+      "source_location": "L312",
       "weight": 1.0
     },
     {
@@ -5236,7 +5245,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L348",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -5245,7 +5254,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L364",
+      "source_location": "L369",
       "weight": 1.0
     },
     {
@@ -5254,7 +5263,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L476",
+      "source_location": "L481",
       "weight": 1.0
     },
     {
@@ -5263,7 +5272,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L178",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -5272,7 +5281,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L242",
+      "source_location": "L247",
       "weight": 1.0
     },
     {
@@ -5281,7 +5290,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L262",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -5290,7 +5299,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L278",
+      "source_location": "L283",
       "weight": 1.0
     },
     {
@@ -5299,7 +5308,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L319",
+      "source_location": "L324",
       "weight": 1.0
     },
     {
@@ -5308,7 +5317,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L374",
+      "source_location": "L379",
       "weight": 1.0
     },
     {
@@ -5317,7 +5326,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L383",
+      "source_location": "L388",
       "weight": 1.0
     },
     {
@@ -6127,7 +6136,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L253",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -6136,7 +6145,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L287",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
@@ -6145,7 +6154,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L301",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
@@ -6154,7 +6163,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L319",
+      "source_location": "L322",
       "weight": 1.0
     },
     {
@@ -6163,7 +6172,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L343",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -6172,7 +6181,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L359",
+      "source_location": "L362",
       "weight": 1.0
     },
     {
@@ -6181,7 +6190,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L378",
+      "source_location": "L381",
       "weight": 1.0
     },
     {
@@ -6190,7 +6199,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L437",
+      "source_location": "L440",
       "weight": 1.0
     },
     {
@@ -6199,7 +6208,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L468",
+      "source_location": "L471",
       "weight": 1.0
     },
     {
@@ -6208,7 +6217,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L493",
+      "source_location": "L496",
       "weight": 1.0
     },
     {
@@ -6217,7 +6226,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L515",
+      "source_location": "L518",
       "weight": 1.0
     },
     {
@@ -6226,7 +6235,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L525",
+      "source_location": "L528",
       "weight": 1.0
     },
     {
@@ -6325,7 +6334,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L232",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -6334,7 +6343,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L246",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
@@ -6343,7 +6352,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L262",
+      "source_location": "L265",
       "weight": 1.0
     },
     {
@@ -6352,7 +6361,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L278",
+      "source_location": "L281",
       "weight": 1.0
     },
     {
@@ -6361,7 +6370,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L281",
+      "source_location": "L284",
       "weight": 1.0
     },
     {
@@ -6370,7 +6379,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L298",
+      "source_location": "L301",
       "weight": 1.0
     },
     {
@@ -6379,7 +6388,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L313",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -6388,7 +6397,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L313",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -6397,7 +6406,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L381",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -6406,7 +6415,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L446",
+      "source_location": "L449",
       "weight": 1.0
     },
     {
@@ -6415,7 +6424,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L452",
+      "source_location": "L455",
       "weight": 1.0
     },
     {
@@ -6424,7 +6433,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L471",
+      "source_location": "L474",
       "weight": 1.0
     },
     {
@@ -6433,7 +6442,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L476",
+      "source_location": "L479",
       "weight": 1.0
     },
     {
@@ -6442,7 +6451,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L497",
+      "source_location": "L500",
       "weight": 1.0
     },
     {
@@ -6451,7 +6460,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L512",
+      "source_location": "L515",
       "weight": 1.0
     },
     {
@@ -6460,7 +6469,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L516",
+      "source_location": "L519",
       "weight": 1.0
     },
     {
@@ -6469,7 +6478,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "internal/server/api.go",
-      "source_location": "L517",
+      "source_location": "L520",
       "weight": 1.0
     },
     {
@@ -7590,7 +7599,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "templrpress-nextjs/src/app/rest-api-spec/page.tsx",
-      "source_location": "L383",
+      "source_location": "L388",
       "weight": 1.0
     },
     {
@@ -7720,7 +7729,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L260",
+      "source_location": "L263",
       "weight": 1.0
     },
     {
@@ -7730,7 +7739,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L379",
+      "source_location": "L382",
       "weight": 1.0
     },
     {
@@ -7740,7 +7749,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L418",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -7750,7 +7759,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L438",
+      "source_location": "L441",
       "weight": 1.0
     },
     {
@@ -7760,7 +7769,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L444",
+      "source_location": "L447",
       "weight": 1.0
     },
     {
@@ -7770,7 +7779,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L458",
+      "source_location": "L461",
       "weight": 1.0
     },
     {
@@ -7780,7 +7789,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L475",
+      "source_location": "L478",
       "weight": 1.0
     },
     {
@@ -7790,7 +7799,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L481",
+      "source_location": "L484",
       "weight": 1.0
     },
     {
@@ -7800,7 +7809,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/server/api.go",
-      "source_location": "L507",
+      "source_location": "L510",
       "weight": 1.0
     },
     {
@@ -7856,10 +7865,10 @@
   ],
   "metadata": {
     "generator": "scripts/graphify-build.py (AST-only)",
-    "generated_at": "2026-07-19T13:26:56Z",
-    "source_sha": "749dc897942f44fd08c07f89628c9651bd5e2e7b",
+    "generated_at": "2026-07-19T13:37:17Z",
+    "source_sha": "9f512c769f915ff56d30d76c4c428cb586e392b7",
     "source_ref": "refs/heads/main",
     "node_count": 294,
-    "edge_count": 639
+    "edge_count": 640
   }
 }

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "node_count": 290,
-  "edge_count": 639,
+  "edge_count": 640,
   "module_count": 11,
   "modules": {
     "internal/cms": {
