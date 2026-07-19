@@ -63,4 +63,4 @@ coding agents can navigate the codebase without scanning it.
 
 ## License
 
-Apache-2.0
+MIT

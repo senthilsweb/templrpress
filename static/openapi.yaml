@@ -7,7 +7,7 @@ info:
     both the embedded Next.js SPA (at `/`) and a small JSON API (under
     `/api/...`) used by the SPA and external integrators.
   license:
-    name: Apache-2.0
+    name: MIT
 
 servers:
   - url: http://localhost:5000
