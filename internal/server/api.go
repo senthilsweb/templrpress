@@ -226,11 +226,13 @@ func (s *Server) handleOpenAPISpecsList(w http.ResponseWriter, r *http.Request) 
 			break
 		}
 	}
+	// The SPA reads `is_default`; keep `default` for older clients.
 	items := []map[string]any{
 		{
 			"name":        "_builtin",
 			"description": firstNonEmpty(s.cfg.APIDocs.Title, "TemplrPress API"),
 			"default":     !hasUserDefault,
+			"is_default":  !hasUserDefault,
 		},
 	}
 	for _, e := range s.cfg.OpenAPISpecs {
@@ -241,6 +243,7 @@ func (s *Server) handleOpenAPISpecsList(w http.ResponseWriter, r *http.Request) 
 			"name":        e.Name,
 			"description": e.Description,
 			"default":     e.IsDefault,
+			"is_default":  e.IsDefault,
 		})
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"items": items, "total": len(items)})

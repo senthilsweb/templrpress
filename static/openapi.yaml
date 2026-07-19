@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: TemplrPress API
-  version: 0.2.0
+  version: 0.4.0
   description: |
     HTTP surface of a running TemplrPress instance. The single binary serves
     both the embedded Next.js SPA (at `/`) and a small JSON API (under
@@ -217,6 +217,30 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Article" }
+        "404": { description: Not found }
+  /api/cms/pdf/{folder}/{slug}:
+    get:
+      tags: [CMS]
+      summary: Download an article as PDF
+      description: >
+        Server-side markdown-to-PDF rendering (pure Go, embedded fonts).
+        A bare slug (`/api/cms/pdf/{slug}`) resolves against the docs root,
+        then the blog.
+      parameters:
+        - in: path
+          name: folder
+          required: true
+          schema: { type: string, example: docs }
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string, example: introduction }
+      responses:
+        "200":
+          description: PDF document (Content-Disposition attachment)
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
         "404": { description: Not found }
   /api/cms/about/{slug}:
     get:

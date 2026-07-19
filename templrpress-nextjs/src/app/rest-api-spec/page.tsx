@@ -19,6 +19,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  SidebarBrandHeader,
+  SidebarVersionFooter,
+} from "@/components/layout/sidebar-chrome";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -216,12 +220,13 @@ function rewriteRef(obj: any): any {
   return out;
 }
 
+// Light shades — rendered on the themed (dark) sidebar background.
 const METHOD_TEXT: Record<string, string> = {
-  get: "text-emerald-600",
-  post: "text-blue-600",
-  put: "text-amber-600",
-  delete: "text-red-600",
-  patch: "text-purple-600",
+  get: "text-emerald-300",
+  post: "text-sky-300",
+  put: "text-amber-300",
+  delete: "text-red-300",
+  patch: "text-purple-300",
 };
 
 function resolveRef(spec: OpenAPISpec, ref: string): OpenAPISchemaObj {
@@ -1008,18 +1013,21 @@ function RestApiSpecPageInner() {
       <aside
         className={`${
           sidebarOpen ? "w-72" : "w-0"
-        } flex-shrink-0 border-r transition-all duration-200 overflow-hidden`}
+        } flex-shrink-0 transition-all duration-200 overflow-hidden text-white shadow-lg sidebar-themed`}
       >
         <div className="flex h-full w-72 flex-col">
-          {/* Header */}
-          <div className="border-b px-4 py-3">
+          {/* Brand header (shared with docs sidebar) */}
+          <SidebarBrandHeader subtitle="API Reference" />
+
+          {/* Spec picker + search */}
+          <div className="border-b border-white/10 px-4 py-3">
             <div className="mb-2">
-              <h1 className="text-sm font-bold">{spec.info.title}</h1>
+              <h1 className="text-sm font-bold text-white">{spec.info.title}</h1>
             </div>
             {(specList?.items?.length ?? 0) > 1 && (
               <div className="mb-2 flex items-center gap-1 w-full min-w-0">
                 <Select value={activeSpecName} onValueChange={handleSpecChange}>
-                  <SelectTrigger className="h-8 flex-1 min-w-0 w-0 text-xs">
+                  <SelectTrigger className="h-8 flex-1 min-w-0 w-0 border-white/20 bg-white/10 text-xs text-white [&_svg]:text-white/60">
                     <SelectValue>{activeSpecDisplayName}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -1050,7 +1058,7 @@ function RestApiSpecPageInner() {
                   title="Spec settings"
                 >
                   <Settings
-                    className={`h-4 w-4 ${overlayActive ? "text-[var(--tg-primary)]" : ""}`}
+                    className={`h-4 w-4 ${overlayActive ? "text-amber-300" : "text-white/70"}`}
                   />
                 </Button>
               </div>
@@ -1067,24 +1075,24 @@ function RestApiSpecPageInner() {
                   title="Spec settings"
                 >
                   <Settings
-                    className={`h-4 w-4 ${overlayActive ? "text-[var(--tg-primary)]" : ""}`}
+                    className={`h-4 w-4 ${overlayActive ? "text-amber-300" : "text-white/70"}`}
                   />
                 </Button>
               </div>
             )}
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
                 placeholder={`Search ${totalEndpoints} endpoints…`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-md border border-gray-200 bg-gray-50 py-1.5 pl-8 pr-8 text-xs dark:border-gray-700 dark:bg-gray-900"
+                className="w-full rounded-md border border-white/20 bg-white/10 py-1.5 pl-8 pr-8 text-xs text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -1098,7 +1106,7 @@ function RestApiSpecPageInner() {
               <div key={tag}>
                 <button
                   onClick={() => toggleTag(tag)}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white/60 transition-colors hover:text-white/90"
                 >
                   {expandedTags.has(tag) ? (
                     <ChevronDown className="h-3 w-3" />
@@ -1106,7 +1114,7 @@ function RestApiSpecPageInner() {
                     <ChevronRight className="h-3 w-3" />
                   )}
                   {tag}
-                  <span className="ml-auto text-gray-300 font-normal">
+                  <span className="ml-auto font-normal text-white/40">
                     {entries.length}
                   </span>
                 </button>
@@ -1125,18 +1133,18 @@ function RestApiSpecPageInner() {
                           }}
                           className={`flex w-full items-center gap-2 px-4 py-1.5 text-left text-xs transition-colors ${
                             isActive
-                              ? "bg-[var(--tg-primary)]/10 border-r-2 border-[var(--tg-primary)]"
-                              : "hover:bg-gray-50 dark:hover:bg-gray-900"
+                              ? "bg-white/15 border-r-2 border-white"
+                              : "hover:bg-white/10"
                           }`}
                         >
                           <span
                             className={`w-12 shrink-0 text-[9px] font-bold uppercase ${
-                              METHOD_TEXT[entry.method] ?? "text-gray-500"
+                              METHOD_TEXT[entry.method] ?? "text-white/50"
                             }`}
                           >
                             {entry.method}
                           </span>
-                          <span className="truncate font-mono text-gray-700 dark:text-gray-300">
+                          <span className="truncate font-mono text-white/80">
                             {entry.path}
                           </span>
                         </button>
@@ -1147,6 +1155,9 @@ function RestApiSpecPageInner() {
               </div>
             ))}
           </div>
+
+          {/* static footer — version + GitHub (shared with docs sidebar) */}
+          <SidebarVersionFooter />
         </div>
       </aside>
 
