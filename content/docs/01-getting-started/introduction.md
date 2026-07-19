@@ -70,11 +70,16 @@ you need a product website, docs, and blog together, it may fit you too.
   redesign.
 - **Docs site** — three-column layout with section sidebar,
   scroll-tracked table of contents, ordering via `sort_order`.
+- **Product chrome** — docs and API-explorer sidebars share one brand
+  header (logo mark, app name, section subtitle), collapse to a 64px
+  icon rail with the state remembered, and carry a pinned footer with
+  the live release version, an About modal, and a GitHub link.
 - **Blog** — listing plus article pages from `content/blog/` markdown.
 - **REST API explorer** — any OpenAPI 3.x spec: endpoints grouped by
   tag, generated cURL / JavaScript / Python samples, a Try It runner,
   a multi-spec dropdown, and per-spec base-URL overrides stored in the
-  browser only.
+  browser only. TemplrPress's own API spec loads by default, so the
+  product documents itself out of the box.
 - **Article PDF export** — pure Go (goldmark-pdf); no headless browser,
   no wkhtmltopdf.
 

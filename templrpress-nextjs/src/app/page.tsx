@@ -180,7 +180,7 @@ export default function HomePage() {
   const heroSuffix = branding?.hero_heading_suffix ?? "with one binary";
   const heroTagline =
     branding?.hero_tagline ??
-    "Markdown-driven landing page, docs, and API reference. No build step. No database. Just config.";
+    "Markdown-driven landing page, docs, blog, and OpenAPI API docs. No build step. No database. Just config.";
   const heroPrimaryText = branding?.hero_cta_primary_text ?? "Read the docs";
   const heroPrimaryURL = branding?.hero_cta_primary_url ?? "/docs";
   const heroSecondaryText = branding?.hero_cta_secondary_text ?? "View API";

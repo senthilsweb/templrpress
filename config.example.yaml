@@ -23,7 +23,7 @@ branding:
   hero_heading: "Publish content"
   hero_heading_highlight: "fast"
   hero_heading_suffix: "with one binary"
-  hero_tagline: "Markdown-driven landing page, docs, blog, and API reference. No build step. No database. Just config."
+  hero_tagline: "Markdown-driven landing page, docs, blog, and OpenAPI API docs. No build step. No database. Just config."
   hero_cta_primary_text: "Read the docs"
   hero_cta_primary_url: "/docs"
   hero_cta_secondary_text: "View Blog"
