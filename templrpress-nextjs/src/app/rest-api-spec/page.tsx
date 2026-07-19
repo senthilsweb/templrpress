@@ -1019,11 +1019,14 @@ function RestApiSpecPageInner() {
           {/* Brand header (shared with docs sidebar) */}
           <SidebarBrandHeader subtitle="API Reference" />
 
-          {/* Spec picker + search */}
+          {/* Spec picker + search. The spec title is suppressed for the
+              built-in spec — it would just repeat the brand header. */}
           <div className="border-b border-white/10 px-4 py-3">
-            <div className="mb-2">
-              <h1 className="text-sm font-bold text-white">{spec.info.title}</h1>
-            </div>
+            {activeSpecName !== "_builtin" && (
+              <div className="mb-2">
+                <h1 className="text-sm font-bold text-white">{spec.info.title}</h1>
+              </div>
+            )}
             {(specList?.items?.length ?? 0) > 1 && (
               <div className="mb-2 flex items-center gap-1 w-full min-w-0">
                 <Select value={activeSpecName} onValueChange={handleSpecChange}>
