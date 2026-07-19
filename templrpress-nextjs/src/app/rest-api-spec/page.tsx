@@ -1175,15 +1175,16 @@ function RestApiSpecPageInner() {
 
         {selectedEndpoint ? (
           <div className="flex items-stretch min-h-[calc(100vh-97px)]">
-            {/* Endpoint detail */}
-            <div className="flex-1 min-w-0 p-6 lg:p-8 max-w-4xl xl:max-w-5xl">
+            {/* Endpoint detail — 3/5 of the row, code column takes the rest
+                so no dead space remains on wide screens. */}
+            <div className="flex-[3] min-w-0 p-6 lg:p-8">
               <EndpointDetail entry={selectedEndpoint} spec={spec} overrideBadge={overrideBadge} />
             </div>
 
             {/* Code panel - right side, hidden on small screens.
                 The border lives on this stretched wrapper (not the sticky
                 scroller) so the divider always spans the full row height. */}
-            <div className="hidden lg:block w-[360px] xl:w-[400px] flex-shrink-0 border-l">
+            <div className="hidden lg:block flex-[2] min-w-[360px] max-w-[640px] border-l">
               <div className="sticky top-12 max-h-[calc(100vh-56px-48px)] overflow-y-auto p-5">
                 <CodePanel
                   method={selectedEndpoint.method}
