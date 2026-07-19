@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "node_count": 303,
-  "edge_count": 681,
+  "node_count": 305,
+  "edge_count": 685,
   "module_count": 11,
   "modules": {
     "internal/cms": {
@@ -135,7 +135,7 @@
         "NotFound()",
         "layout.tsx",
         "RootLayout()",
-        "QuickstartStrip()"
+        "copy()"
       ],
       "calls": [
         "internal/cms"
