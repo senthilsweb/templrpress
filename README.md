@@ -46,7 +46,7 @@ and **Advanced configuration**.
 
 ## Build from source
 
-Requires Go 1.21+ and Node 20+ (build time only):
+Requires Go 1.25+ and Node 20+ (build time only):
 
 ```bash
 git clone https://github.com/senthilsweb/templrpress

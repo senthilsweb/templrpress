@@ -13,7 +13,7 @@ RUN npm run build
 
 # ---- Go build stage ------------------------------------------------------
 # Also native: Go cross-compiles to TARGETOS/TARGETARCH below.
-FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS builder
 WORKDIR /src
 
 RUN apk add --no-cache git
