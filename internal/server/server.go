@@ -142,6 +142,7 @@ func (s *Server) routes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/openapi-spec", s.handleOpenAPISpec)
 
 	// CMS
+	mux.HandleFunc("/api/cms/pdf/", s.handleCMSPDF)
 	mux.HandleFunc("/api/cms/docs/nav", s.handleDocsNav)
 	mux.HandleFunc("/api/cms/list", s.handleCMSList)
 	mux.HandleFunc("/api/cms/about/", s.handleAboutGet)

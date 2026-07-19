@@ -14,6 +14,8 @@ with three files:
 |-----------|---------|--------|
 | [`openapi-disk-fallback`](changes/openapi-disk-fallback/proposal.md) | Disk fallback in `handleOpenAPISpec` so volume-mounted spec files work without rebuilding the binary | implemented |
 | [`ui-refresh-api-landing`](changes/ui-refresh-api-landing/proposal.md) | API page column geometry + full-height divider, Sheet form standard adoption, config-driven landing page polish | implemented (v0.4.0) |
+| [`docs-consolidation`](changes/docs-consolidation/proposal.md) | Merge Installation/Quickstart/Configuration → Getting Started, CMS/Authoring → Authoring content, new Advanced configuration page | implemented |
+| [`pdf-export-pure-go`](changes/pdf-export-pure-go/proposal.md) | Defect: article PDF download 404s (no server route); fix with pure-Go markdown→PDF via goldmark-pdf | implemented |
 
 ## Project north star
 

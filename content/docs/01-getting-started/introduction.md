@@ -76,15 +76,10 @@ Generate a starter file and edit it:
 ## Docs embedded or served external
 
 Markdown is embedded in the binary by default, but you do not have to
-rebuild to change content. Two override modes:
-
-| Mode | Config | Behavior |
-|------|--------|----------|
-| UNION | `cms.source: /path/to/content` | Disk content is merged with embedded content; embedded wins on collision |
-| REPLACE | `cms.folders.docs.source: /path/to/docs` | That folder is served only from disk; embedded entries are ignored |
-
-The same applies to OpenAPI specs: a spec file volume-mounted under
-`static/openapi/` is picked up without rebuilding.
+rebuild to change content: disk overrides can merge with or replace the
+embedded pages per folder, and OpenAPI spec files volume-mounted under
+`static/openapi/` are picked up the same way. The exact rules live in
+[Advanced configuration](/docs/advanced-configuration).
 
 ## REST API explorer for any OpenAPI spec
 
@@ -110,4 +105,5 @@ docker run --rm -p 5000:5000 ghcr.io/senthilsweb/templrpress:latest
 ```
 
 Open <http://localhost:5000>, then continue with
-[Installation](/docs/installation) and [Quickstart](/docs/quickstart).
+[Getting Started](/docs/getting-started) and
+[Authoring content](/docs/authoring).

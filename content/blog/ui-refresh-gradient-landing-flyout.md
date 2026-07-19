@@ -60,9 +60,9 @@ navigation:
   - label: "Resources"
     children:
       - label: "Quickstart"
-        url: "/docs/quickstart"
+        url: "/docs/getting-started"
         icon: "zap"
-        subtitle: "Running in under a minute"
+        subtitle: "Zero to running site"
 ```
 
 renders a proper flyout with no SPA change at all.
