@@ -94,7 +94,7 @@ cms:
   #     source: "./content/blog"   # Blog content is always external.
 
 blog:
-  enabled: false               # Hidden by default — flip to true to expose /blog.
+  enabled: true                # Set false to hide /blog.
   root: "blog"
   page_size: 10
   # source: ""                 # Explicit on-disk blog directory. When unset
@@ -185,7 +185,6 @@ navigation:
   - label: "Blog"
     url: "/blog"
     icon: "pen-line"
-    enabled: false              # flip when blog.enabled = true
   - label: "API"
     url: "/rest-api-spec"
     icon: "code"
