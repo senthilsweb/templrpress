@@ -1,7 +1,7 @@
 {
   "version": 1,
   "node_count": 290,
-  "edge_count": 634,
+  "edge_count": 639,
   "module_count": 11,
   "modules": {
     "internal/cms": {
@@ -20,11 +20,11 @@
       "called_by": [
         "internal/server",
         "templrpress-nextjs/src/lib",
-        "cmd/root.go",
-        "templrpress-nextjs/src/app",
         "templrpress-nextjs/src/components",
-        "scripts/graphify-build.py",
-        "scripts/graphify-index.py"
+        "templrpress-nextjs/src/app",
+        "cmd/root.go",
+        "scripts/graphify-index.py",
+        "scripts/graphify-build.py"
       ]
     },
     "internal/server": {
@@ -34,17 +34,17 @@
         "server.go"
       ],
       "labels": [
-        "server.go",
-        "Assets",
+        "api.go",
+        "writeJSON()",
         "Server",
-        "New()",
-        "buildLoader()",
-        "emptyFS"
+        ".handleHealthz()",
+        ".handleReadyz()",
+        ".handleVersion()"
       ],
       "calls": [
         "internal/cms",
-        "templrpress-nextjs/src/app",
-        "internal/config"
+        "internal/config",
+        "templrpress-nextjs/src/app"
       ],
       "called_by": [
         "cmd/root.go"
@@ -63,19 +63,18 @@
         "cn()",
         "normalizeIcon()",
         "normalizeConfig()",
-        "card.tsx",
-        "CardDescription()",
-        "CardFooter()"
+        "spec-settings-sheet.tsx",
+        "updateHeader()",
+        "addHeader()"
       ],
       "calls": [
-        "templrpress-nextjs/src/providers",
         "templrpress-nextjs/src/lib",
+        "templrpress-nextjs/src/providers",
+        "internal/cms",
         "internal/config",
-        "internal/cms"
+        "templrpress-nextjs/src/app"
       ],
-      "called_by": [
-        "templrpress-nextjs/src/lib"
-      ]
+      "called_by": []
     },
     "templrpress-nextjs/src/lib": {
       "entry_files": [
@@ -87,19 +86,43 @@
         "utils.ts"
       ],
       "labels": [
-        "utils.ts",
-        "cn()",
         "openapi-overlay.ts",
         "safeKey()",
         "loadOverlay()",
-        "saveOverlay()"
+        "saveOverlay()",
+        "resetOverlay()",
+        "isOverlayActive()"
       ],
       "calls": [
         "internal/cms",
-        "templrpress-nextjs/src/components"
+        "templrpress-nextjs/src/app"
       ],
       "called_by": [
         "templrpress-nextjs/src/components"
+      ]
+    },
+    "templrpress-nextjs/src/app": {
+      "entry_files": [
+        "error.tsx",
+        "layout.tsx",
+        "not-found.tsx",
+        "page.tsx"
+      ],
+      "labels": [
+        "page.tsx",
+        "not-found.tsx",
+        "NotFound()",
+        "layout.tsx",
+        "RootLayout()",
+        "QuickstartStrip()"
+      ],
+      "calls": [
+        "internal/cms"
+      ],
+      "called_by": [
+        "templrpress-nextjs/src/components",
+        "templrpress-nextjs/src/lib",
+        "internal/server"
       ]
     },
     "cmd/root.go": {
@@ -138,25 +161,6 @@
         "scripts/graphify-build.py"
       ]
     },
-    "internal/config": {
-      "entry_files": [
-        "config.go"
-      ],
-      "labels": [
-        "config.go",
-        "Config",
-        "OpenAPISpecEntry",
-        "SiteConfig",
-        "ServerConfig",
-        "BrandingConfig"
-      ],
-      "calls": [],
-      "called_by": [
-        "cmd/root.go",
-        "templrpress-nextjs/src/components",
-        "internal/server"
-      ]
-    },
     "scripts/graphify-index.py": {
       "entry_files": [
         "graphify-index.py"
@@ -174,25 +178,22 @@
       ],
       "called_by": []
     },
-    "templrpress-nextjs/src/app": {
+    "internal/config": {
       "entry_files": [
-        "error.tsx",
-        "layout.tsx",
-        "not-found.tsx",
-        "page.tsx"
+        "config.go"
       ],
       "labels": [
-        "page.tsx",
-        "layout.tsx",
-        "RootLayout()",
-        "error.tsx",
-        "GlobalError()",
-        "QuickstartStrip()"
+        "config.go",
+        "Config",
+        "OpenAPISpecEntry",
+        "SiteConfig",
+        "ServerConfig",
+        "BrandingConfig"
       ],
-      "calls": [
-        "internal/cms"
-      ],
+      "calls": [],
       "called_by": [
+        "templrpress-nextjs/src/components",
+        "cmd/root.go",
         "internal/server"
       ]
     },
