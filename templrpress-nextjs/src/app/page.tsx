@@ -89,7 +89,7 @@ function QuickstartStrip({ title, command }: { title: string; command: string })
   }
 
   return (
-    <div className="mx-auto mt-12 max-w-2xl text-left">
+    <div className="mx-auto mt-8 max-w-2xl text-left">
       <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {title}
       </p>
@@ -158,18 +158,18 @@ export default function HomePage() {
               "radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent)",
           }}
         />
-        <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
+        <div className="relative mx-auto max-w-6xl px-6 py-12 sm:py-16">
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[var(--tg-primary)]/30 bg-[var(--tg-primary)]/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--tg-primary)]">
               <Zap className="h-3 w-3" /> {heroBadge}
             </span>
-            <h1 className="mt-6 text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
+            <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
               {heroHeading}{" "}
               <span className="text-[var(--tg-primary)]">{heroHighlight}</span>{" "}
               {heroSuffix}
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground sm:text-xl">{heroTagline}</p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <p className="mt-5 text-lg text-muted-foreground sm:text-xl">{heroTagline}</p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href={heroPrimaryURL}
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--tg-primary)] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
@@ -191,7 +191,7 @@ export default function HomePage() {
       </section>
 
       {/* Features grid */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-16">
+      <section className="mx-auto w-full max-w-6xl px-6 pb-16 pt-4">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((item, i) => {
             if (featuresStyle === "gradient") {

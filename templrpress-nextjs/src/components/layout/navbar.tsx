@@ -12,6 +12,7 @@ import { eventBus, EVENTS } from "@/lib/event-bus";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/shared/github-icon";
+import { DocsSearch } from "@/components/search/docs-search";
 import type { NavItem } from "@/lib/config";
 import { filterEnabledNavItems, flattenNavChildren } from "@/lib/config";
 import type { BrandingConfig } from "@/lib/config";
@@ -518,6 +519,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
+          <DocsSearch />
           {showAuthButtons && (
             <>
               {isLoggedIn ? (
