@@ -69,12 +69,27 @@ type BrandingConfig struct {
 	// default cards.
 	QuickstartTitle   string        `yaml:"quickstart_title"`
 	QuickstartCommand string        `yaml:"quickstart_command"`
+	// QuickstartCommands supersedes the single title/command pair when set:
+	// each entry renders its own labeled strip (e.g. Docker + bare binary).
+	QuickstartCommands []QuickstartEntry `yaml:"quickstart_commands"`
+
+	// Hero layout: "centered" (default) or "split" — left-aligned text with
+	// a mac-window code card on the right (templrgo style).
+	HeroLayout    string `yaml:"hero_layout"`
+	HeroCodeTitle string `yaml:"hero_code_title"` // window title, e.g. docker-compose.yaml
+	HeroCode      string `yaml:"hero_code"`       // card body (YAML-tinted by the SPA)
 	FeaturesStyle     string        `yaml:"features_style"` // "tint" (default) | "gradient"
 	Features          []FeatureCard `yaml:"features"`
 
 	// Showcase rows rendered below the feature grid: alternating
 	// text/visual bands (Ghost-style). Empty list hides the section.
 	Showcase []ShowcaseItem `yaml:"showcase"`
+}
+
+// QuickstartEntry is one labeled command strip under the hero CTAs.
+type QuickstartEntry struct {
+	Title   string `yaml:"title"`
+	Command string `yaml:"command"`
 }
 
 // ShowcaseItem is one alternating text/visual feature band on the landing

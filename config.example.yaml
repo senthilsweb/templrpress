@@ -29,9 +29,28 @@ branding:
   hero_cta_secondary_text: "View Blog"
   hero_cta_secondary_url: "/blog"
 
-  # Optional quickstart strip under the hero CTAs (hidden when command is unset).
-  quickstart_title: "Run it in one line"
-  quickstart_command: "docker run --rm -p 5000:5000 ghcr.io/senthilsweb/templrpress:latest"
+  # Hero layout: centered (default) or split — left-aligned copy with a
+  # mac-window code card on the right (needs hero_code).
+  hero_layout: split
+  hero_code_title: "docker-compose.yaml"
+  hero_code: |
+    services:
+      templrpress:
+        image: ghcr.io/senthilsweb/templrpress:latest
+        ports:
+          - "5000:5000"
+        volumes:
+          - ./config.yaml:/app/config.yaml
+          - ./content:/app/content
+
+  # Quickstart strips under the hero CTAs. List form supports multiple
+  # labeled commands; the older quickstart_title/quickstart_command pair
+  # still works as a single strip.
+  quickstart_commands:
+    - title: "Run with Docker"
+      command: "docker run --rm -p 5000:5000 ghcr.io/senthilsweb/templrpress:latest"
+    - title: "Or the bare binary — no Docker needed"
+      command: "curl -LO https://github.com/senthilsweb/templrpress/releases/latest/download/templrpress-darwin-arm64 && chmod +x templrpress-* && ./templrpress-darwin-arm64"
 
   # Feature cards. Omit the whole list to keep the built-in three.
   # features_style: tint (default, icon cards) | gradient (bold gradient CTA cards)
@@ -133,8 +152,10 @@ openapi_specs:
 footer:
   enabled: true
   tagline: "A single-binary markdown publishing platform."
-  credit_prefix: "Built with"
-  credit_text: "TemplrPress"
+  # Rendered as: {credit_prefix} ♥ [github-icon] {credit_text}
+  # (the GitHub mark appears automatically when credit_url is a github.com link)
+  credit_prefix: "Made with"
+  credit_text: "senthilsweb"
   credit_url: "https://github.com/senthilsweb/templrpress"
   cta_tagline: "Ready to publish?"
   cta_primary: "Ship your site."

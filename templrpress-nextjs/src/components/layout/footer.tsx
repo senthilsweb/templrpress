@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
+import { GitHubIcon } from "@/components/shared/github-icon";
 import { useConfig } from "@/providers/config-provider";
 
 export function Footer() {
@@ -105,14 +106,21 @@ export function Footer() {
           <p>
             © {year} {appName}. All rights reserved.
           </p>
-          <p>
-            {creditPrefix}{" "}
+          <p className="inline-flex items-center gap-1.5">
+            {creditPrefix}
+            <Heart
+              aria-label="love"
+              className="h-3.5 w-3.5 fill-red-500 text-red-500"
+            />
             <Link
               href={creditLinkUrl}
               target={isExternal ? "_blank" : undefined}
               rel={isExternal ? "noopener noreferrer" : undefined}
-              className="font-medium text-foreground transition-colors hover:text-[var(--tg-primary)]"
+              className="inline-flex items-center gap-1.5 font-medium text-foreground transition-colors hover:text-[var(--tg-primary)]"
             >
+              {creditLinkUrl.includes("github.com") && (
+                <GitHubIcon className="h-3.5 w-3.5" />
+              )}
               {creditLinkText}
             </Link>
           </p>

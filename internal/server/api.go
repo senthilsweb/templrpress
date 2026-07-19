@@ -103,8 +103,12 @@ func (s *Server) handleConfigBranding(w http.ResponseWriter, r *http.Request) {
 		"hero_cta_secondary_text": b.HeroCTA2Text,
 		"hero_cta_secondary_url":  b.HeroCTA2URL,
 
-		"quickstart_title":   b.QuickstartTitle,
-		"quickstart_command": b.QuickstartCommand,
+		"quickstart_title":    b.QuickstartTitle,
+		"quickstart_command":  b.QuickstartCommand,
+		"quickstart_commands": quickstartEntries(b.QuickstartCommands),
+		"hero_layout":         b.HeroLayout,
+		"hero_code_title":     b.HeroCodeTitle,
+		"hero_code":           b.HeroCode,
 		"features_style":     b.FeaturesStyle,
 		"features":           featureCards(b.Features),
 		"showcase":           showcaseItems(b.Showcase),
@@ -189,6 +193,18 @@ func featureCards(cards []config.FeatureCard) []map[string]string {
 			"cta_text":    c.CTAText,
 			"gradient":    c.Gradient,
 		})
+	}
+	return out
+}
+
+// quickstartEntries maps quickstart command entries for the SPA.
+func quickstartEntries(entries []config.QuickstartEntry) []map[string]string {
+	out := make([]map[string]string, 0, len(entries))
+	for _, e := range entries {
+		if e.Command == "" {
+			continue
+		}
+		out = append(out, map[string]string{"title": e.Title, "command": e.Command})
 	}
 	return out
 }

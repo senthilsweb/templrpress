@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useConfig } from "@/providers/config-provider";
-import type { FeatureCard, ShowcaseItem } from "@/lib/config";
+import type { FeatureCard, QuickstartEntry, ShowcaseItem } from "@/lib/config";
 
 // Allowlisted icons for config-driven feature cards; unknown names fall back
 // to FileText (see openspec/changes/ui-refresh-api-landing/design.md).
@@ -75,7 +75,7 @@ const DEFAULT_FEATURES: FeatureCard[] = [
   },
 ];
 
-function QuickstartStrip({ title, command }: { title: string; command: string }) {
+function QuickstartStrip({ title, command }: { title?: string; command: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -89,10 +89,12 @@ function QuickstartStrip({ title, command }: { title: string; command: string })
   }
 
   return (
-    <div className="mx-auto mt-8 max-w-2xl text-left">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {title}
-      </p>
+    <div className="text-left">
+      {title && (
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {title}
+        </p>
+      )}
       <div className="flex items-center gap-3 rounded-xl border border-border bg-gray-950 px-4 py-3 shadow-sm dark:border-gray-800">
         <Terminal className="h-4 w-4 flex-shrink-0 text-gray-500" />
         <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-gray-100">
@@ -106,6 +108,66 @@ function QuickstartStrip({ title, command }: { title: string; command: string })
           {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
         </button>
       </div>
+    </div>
+  );
+}
+
+/* Lightweight YAML tinting for the split-hero code card. Input is
+   site-owner config, not user content, so line-level classification is
+   enough: comments, keys, list markers, quoted strings. */
+function YamlLine({ line }: { line: string }) {
+  const trimmed = line.trimStart();
+  const indent = line.slice(0, line.length - trimmed.length);
+  if (trimmed.startsWith("#")) {
+    return (
+      <span>
+        {indent}
+        <span className="text-gray-500">{trimmed}</span>
+      </span>
+    );
+  }
+  const m = trimmed.match(/^(-\s*)?([\w./-]+):(\s*)(.*)$/);
+  if (m) {
+    const [, dash, key, space, rest] = m;
+    return (
+      <span>
+        {indent}
+        {dash && <span className="text-gray-400">{dash}</span>}
+        <span className="text-violet-300">{key}</span>
+        <span className="text-gray-400">:</span>
+        {space}
+        <span className={rest.startsWith("\"") ? "text-amber-300" : "text-emerald-300"}>
+          {rest}
+        </span>
+      </span>
+    );
+  }
+  const isListItem = trimmed.startsWith("- ");
+  return (
+    <span>
+      {indent}
+      <span className={isListItem ? "text-emerald-300" : "text-gray-200"}>{trimmed}</span>
+    </span>
+  );
+}
+
+function HeroCodeCard({ title, code }: { title: string; code: string }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-950 shadow-2xl">
+      {/* mac window chrome */}
+      <div className="flex items-center gap-2 border-b border-gray-800 px-4 py-3">
+        <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+        <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+        <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+        <span className="ml-3 truncate font-mono text-xs text-gray-400">{title}</span>
+      </div>
+      <pre className="overflow-x-auto px-5 py-4 font-mono text-[13px] leading-6">
+        {code.replace(/\n$/, "").split("\n").map((line, i) => (
+          <div key={i}>
+            <YamlLine line={line} />
+          </div>
+        ))}
+      </pre>
     </div>
   );
 }
@@ -125,6 +187,17 @@ export default function HomePage() {
   const heroSecondaryURL = branding?.hero_cta_secondary_url ?? "/rest-api-spec";
   const quickstartTitle = branding?.quickstart_title || "Quickstart";
   const quickstartCommand = branding?.quickstart_command || "";
+  // List form supersedes the single pair; the pair degrades to one entry.
+  const quickstartEntries: QuickstartEntry[] =
+    branding?.quickstart_commands && branding.quickstart_commands.length > 0
+      ? branding.quickstart_commands
+      : quickstartCommand
+        ? [{ title: quickstartTitle, command: quickstartCommand }]
+        : [];
+  const heroCode = branding?.hero_code || "";
+  const heroCodeTitle = branding?.hero_code_title || "docker-compose.yaml";
+  const heroLayout =
+    branding?.hero_layout === "split" && heroCode ? "split" : "centered";
   const features =
     branding?.features && branding.features.length > 0
       ? branding.features
@@ -159,34 +232,77 @@ export default function HomePage() {
           }}
         />
         <div className="relative mx-auto max-w-6xl px-6 py-12 sm:py-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--tg-primary)]/30 bg-[var(--tg-primary)]/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--tg-primary)]">
-              <Zap className="h-3 w-3" /> {heroBadge}
-            </span>
-            <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-              {heroHeading}{" "}
-              <span className="text-[var(--tg-primary)]">{heroHighlight}</span>{" "}
-              {heroSuffix}
-            </h1>
-            <p className="mt-5 text-lg text-muted-foreground sm:text-xl">{heroTagline}</p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href={heroPrimaryURL}
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--tg-primary)] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
-              >
-                {heroPrimaryText} <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href={heroSecondaryURL}
-                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted"
-              >
-                {heroSecondaryText}
-              </Link>
+          {heroLayout === "split" ? (
+            /* Split hero: left-aligned copy, mac-window code card right. */
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+              <div className="text-left">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[var(--tg-primary)]/30 bg-[var(--tg-primary)]/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--tg-primary)]">
+                  <Zap className="h-3 w-3" /> {heroBadge}
+                </span>
+                <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+                  {heroHeading}{" "}
+                  <span className="text-[var(--tg-primary)]">{heroHighlight}</span>{" "}
+                  {heroSuffix}
+                </h1>
+                <p className="mt-5 text-lg text-muted-foreground">{heroTagline}</p>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <Link
+                    href={heroPrimaryURL}
+                    className="inline-flex items-center gap-2 rounded-full bg-[var(--tg-primary)] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
+                  >
+                    {heroPrimaryText} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href={heroSecondaryURL}
+                    className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted"
+                  >
+                    {heroSecondaryText}
+                  </Link>
+                </div>
+                {quickstartEntries.length > 0 && (
+                  <div className="mt-8 max-w-xl space-y-4">
+                    {quickstartEntries.map((q, i) => (
+                      <QuickstartStrip key={i} title={q.title} command={q.command} />
+                    ))}
+                  </div>
+                )}
+              </div>
+              <HeroCodeCard title={heroCodeTitle} code={heroCode} />
             </div>
-            {quickstartCommand && (
-              <QuickstartStrip title={quickstartTitle} command={quickstartCommand} />
-            )}
-          </div>
+          ) : (
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--tg-primary)]/30 bg-[var(--tg-primary)]/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--tg-primary)]">
+                <Zap className="h-3 w-3" /> {heroBadge}
+              </span>
+              <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+                {heroHeading}{" "}
+                <span className="text-[var(--tg-primary)]">{heroHighlight}</span>{" "}
+                {heroSuffix}
+              </h1>
+              <p className="mt-5 text-lg text-muted-foreground sm:text-xl">{heroTagline}</p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  href={heroPrimaryURL}
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--tg-primary)] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
+                >
+                  {heroPrimaryText} <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href={heroSecondaryURL}
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted"
+                >
+                  {heroSecondaryText}
+                </Link>
+              </div>
+              {quickstartEntries.length > 0 && (
+                <div className="mx-auto mt-8 max-w-2xl space-y-4">
+                  {quickstartEntries.map((q, i) => (
+                    <QuickstartStrip key={i} title={q.title} command={q.command} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 

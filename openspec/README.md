@@ -16,6 +16,7 @@ with three files:
 | [`ui-refresh-api-landing`](changes/ui-refresh-api-landing/proposal.md) | API page column geometry + full-height divider, Sheet form standard adoption, config-driven landing page polish | implemented (v0.4.0) |
 | [`docs-consolidation`](changes/docs-consolidation/proposal.md) | Merge Installation/Quickstart/Configuration → Getting Started, CMS/Authoring → Authoring content, new Advanced configuration page | implemented |
 | [`pdf-export-pure-go`](changes/pdf-export-pure-go/proposal.md) | Defect: article PDF download 404s (no server route); fix with pure-Go markdown→PDF via goldmark-pdf | implemented |
+| [`landing-split-hero-footer-credit`](changes/landing-split-hero-footer-credit/proposal.md) | Split hero with code card, multi-command quickstart strips, footer credit with heart + GitHub mark | implemented |
 
 ## Project north star
 

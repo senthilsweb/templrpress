@@ -99,6 +99,12 @@ export interface FeatureCard {
   gradient?: string;
 }
 
+// One labeled command strip under the hero CTAs.
+export interface QuickstartEntry {
+  title?: string;
+  command: string;
+}
+
 // One alternating text/visual band below the feature grid (Ghost-style).
 export interface ShowcaseItem {
   title: string;
@@ -164,9 +170,13 @@ export interface BrandingConfig {
   home_route?: string;
   hidden_landing_sections?: string[];
 
-  // Landing page extras (ui-refresh-api-landing)
+  // Landing page extras (ui-refresh-api-landing, landing-split-hero-footer-credit)
   quickstart_title?: string;
   quickstart_command?: string;
+  quickstart_commands?: QuickstartEntry[];
+  hero_layout?: "centered" | "split";
+  hero_code_title?: string;
+  hero_code?: string;
   features_style?: "tint" | "gradient";
   features?: FeatureCard[];
   showcase?: ShowcaseItem[];
