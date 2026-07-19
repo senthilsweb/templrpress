@@ -19,6 +19,11 @@ The repo root carries two auto-generated knowledge-graph files (rebuilt by
   is not granular enough, e.g. to find every caller of a specific symbol.
   It is also consumed remotely by TemplrGo's knowledge-graph explorer UI.
 
+The repo root also carries `llms.txt` — a markdown site map of every
+published docs and blog page. Regenerate it with `make llms` (never
+hand-edit) whenever docs, blog, or site config change; the same content
+is served live at `/llms.txt`.
+
 Rules:
 
 - Never hand-edit `graph.json` or `graph-index.json`; CI overwrites them.

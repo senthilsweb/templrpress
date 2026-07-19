@@ -1,0 +1,28 @@
+# TemplrPress
+
+> A single-binary, config-driven markdown publishing platform.
+
+## Docs
+
+- [Introduction](https://example.com/docs/?slug=introduction): What TemplrPress is — a single ~15 MB binary that serves your landing page, markdown docs, blog, and an OpenAPI explorer, all driven by one YAML file.
+- [Getting Started](https://example.com/docs/?slug=getting-started): Install TemplrPress, run it, and understand the one YAML file that drives everything — in one page.
+- [Authoring content](https://example.com/docs/?slug=authoring): Folders, frontmatter, and markdown features — how markdown files become routed pages.
+- [Branding & theming](https://example.com/docs/?slug=branding): Configure the app name, logos, favicon, and theme tokens.
+- [Advanced configuration](https://example.com/docs/?slug=advanced-configuration): External content overrides, theming, suppressing embedded pages, the auth stub, and other deployment-time knobs.
+- [OpenAPI specs](https://example.com/docs/?slug=openapi-specs): Register one or more OpenAPI specs and view them at /rest-api-spec.
+- [Deployment](https://example.com/docs/?slug=deployment): Run TemplrPress as a single binary or Docker container.
+- [CI/CD](https://example.com/docs/?slug=ci-cd): The two GitHub Actions workflows behind TemplrPress — Docker build-and-publish and the Graphify knowledge-graph pipeline — and how to trigger, skip, and debug them.
+
+## Blog
+
+- [Hello, world](https://example.com/blog/?slug=hello-world): First post on the TemplrPress demo blog.
+- [Introducing TemplrPress — a Publishing Platform in One Binary](https://example.com/blog/?slug=introducing-templrpress): One ~15 MB binary serves your landing page, docs, blog, and an OpenAPI explorer — driven by a single YAML file, no database, no build step.
+- [Docs, Embedded or External — One Binary, Two Content Modes](https://example.com/blog/?slug=docs-embedded-or-external): How TemplrPress serves markdown compiled into the binary, from a mounted folder, or both — UNION and REPLACE modes explained with the exact YAML.
+- [An API Explorer for Any OpenAPI Spec](https://example.com/blog/?slug=api-explorer-any-openapi-spec): Register any OpenAPI 3.x document in YAML and get endpoint pages, cURL/JavaScript/Python samples, and a Try It runner — no Swagger UI, no CDN.
+- [UI Refresh — Gradient Landing, Flyout Menus, and a Wider API View](https://example.com/blog/?slug=ui-refresh-gradient-landing-flyout): The next TemplrPress release reworks the landing page with gradient CTA cards and showcase bands, enables config-driven flyout menus, and fixes the API page layout.
+- [CI/CD in TemplrPress — One Workflow Ships the Binary, One Maps the Code](https://example.com/blog/?slug=ci-cd-two-workflows): Two GitHub Actions — a multi-arch Docker publish to ghcr.io, and a graphify pipeline that commits a 294-node knowledge graph of the repo on every push.
+
+## API
+
+- [Content JSON API](https://example.com/api/cms/list): every page above as JSON; individual pages at https://example.com/api/cms/{folder}/{slug}
+- [OpenAPI spec](https://example.com/api/openapi-spec): machine-readable description of this site's own JSON API

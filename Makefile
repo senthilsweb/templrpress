@@ -12,7 +12,7 @@ LDFLAGS := -s -w \
            -X main.BuildTime=$(BUILD_TIME) \
            -X main.BuildUser=$(BUILD_USER)
 
-.PHONY: all build dev clean nextjs-build nextjs-install build-nextjs kill-port run tidy docker docker-run build-all help
+.PHONY: all build dev clean nextjs-build nextjs-install build-nextjs kill-port run tidy llms docker docker-run build-all help
 
 # `make` with no target prints help.
 .DEFAULT_GOAL := help
@@ -59,6 +59,10 @@ all: tidy nextjs-build build
 
 tidy:
 	go mod tidy
+
+llms:
+	@echo "Regenerating llms.txt..."
+	go run . llms -o llms.txt
 
 build:
 	@echo "Building $(APP_NAME) $(VERSION)..."

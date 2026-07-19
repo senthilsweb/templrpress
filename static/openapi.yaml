@@ -15,6 +15,8 @@ servers:
 tags:
   - name: Health
     description: Liveness, readiness, build metadata.
+  - name: Discovery
+    description: Machine-readable site maps for LLM crawlers and agents.
   - name: Config
     description: Branding, navigation, datasource stubs.
   - name: OpenAPI
@@ -257,6 +259,21 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Article" }
+  /llms.txt:
+    get:
+      tags: [Discovery]
+      summary: Plain-markdown site map for LLM crawlers (llmstxt.org)
+      description: |
+        Lists every published docs and blog page with its description, plus
+        the JSON API entry points. Regenerated from live content on every
+        request; a committed snapshot lives at the repo root, produced by
+        `templrpress llms`.
+      responses:
+        "200":
+          description: Markdown site map
+          content:
+            text/plain:
+              schema: { type: string }
 
 components:
   schemas:

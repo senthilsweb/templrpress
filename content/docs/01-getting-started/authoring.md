@@ -47,15 +47,20 @@ Every markdown file starts with a YAML block:
 title: "Page title"          # required — sidebar label and <h1>
 slug: "my-page"              # recommended — URL segment; defaults to file basename
 nav_title: "Short label"     # optional — overrides title in the sidebar
-description: "One-liner."    # optional — shown in lists and <meta>
+description: "One-liner."    # optional — shown in lists, <meta>, and link previews
 category: "Guides"           # optional — groups pages in the sidebar
 sort_order: 20               # optional — lower = earlier; 0 means unset (sorts last)
 date: 2026-01-15             # optional — ISO date or RFC3339 (blog uses it)
 author: "Your Name"          # optional — shown on blog articles
 tags: [tag1, tag2]           # optional — shown as chips on blog cards
+cover_image: "/static/x.png" # optional — og:image for social link previews
 published: true              # optional — defaults true; false hides the page (404)
 ---
 ```
+
+`title`, `description`, and `cover_image` also feed the Open Graph and
+Twitter card tags the server injects per page, so they are what WhatsApp,
+Slack, or an email client shows when someone shares the page's link.
 
 Two gotchas worth knowing:
 

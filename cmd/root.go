@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"templrpress/internal/banner"
 	"templrpress/internal/config"
@@ -32,6 +33,8 @@ func Execute() error {
 		return nil
 	case "init":
 		return runInit(os.Args[2:])
+	case "llms":
+		return runLLMs(os.Args[2:])
 	case "help", "-h", "--help":
 		printHelp()
 		return nil
@@ -47,6 +50,7 @@ func printHelp() {
 USAGE:
   templrpress [serve] [flags]      Start the HTTP server (default)
   templrpress init [-o config.yaml] Write a starter config file to disk
+  templrpress llms [-o llms.txt]   Generate llms.txt from config + content
   templrpress version              Print version
   templrpress help                 Show this help
 
@@ -114,6 +118,52 @@ func runServe(args []string) error {
 
 	banner.Print(cfg, Version, source)
 	return srv.Run()
+}
+
+// runLLMs regenerates llms.txt from the same code path that serves
+// /llms.txt at runtime, so the committed copy never drifts from the live
+// endpoint. Run it whenever docs, blog, or site config change.
+func runLLMs(args []string) error {
+	fs := flag.NewFlagSet("llms", flag.ContinueOnError)
+	var configPath, out, base string
+	fs.StringVar(&configPath, "config", "", "Path to config file")
+	fs.StringVar(&configPath, "f", "", "Path to config file (shorthand)")
+	fs.StringVar(&out, "o", "llms.txt", "output path, or - for stdout")
+	fs.StringVar(&base, "base", "", "base URL for links (default: site.url from config)")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	if configPath == "" {
+		configPath = os.Getenv("TEMPLRPRESS_CONFIG")
+	}
+
+	cfg, _, err := config.Load(configPath, ConfigExample)
+	if err != nil {
+		return fmt.Errorf("load config: %w", err)
+	}
+	srv, err := server.New(cfg, server.Assets{
+		SPA:     SPAFS,
+		Static:  StaticFS,
+		Content: ContentFS,
+		Version: Version,
+	})
+	if err != nil {
+		return err
+	}
+
+	if base == "" {
+		base = strings.TrimRight(cfg.Site.URL, "/")
+	}
+	text := srv.LLMsTxt(base)
+	if out == "-" {
+		fmt.Print(text)
+		return nil
+	}
+	if err := os.WriteFile(out, []byte(text), 0o644); err != nil {
+		return err
+	}
+	fmt.Printf("wrote %s\n", out)
+	return nil
 }
 
 func runInit(args []string) error {

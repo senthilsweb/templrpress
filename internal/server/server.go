@@ -131,6 +131,9 @@ func (s *Server) routes(mux *http.ServeMux) {
 	mux.HandleFunc("/readyz", s.handleReadyz)
 	mux.HandleFunc("/api/version", s.handleVersion)
 
+	// LLM crawler site map (https://llmstxt.org)
+	mux.HandleFunc("/llms.txt", s.handleLLMsTxt)
+
 	// auth stubs
 	mux.HandleFunc("/api/auth/status", s.handleAuthStatus)
 	mux.HandleFunc("/api/auth/logout", s.handleAuthLogout)
@@ -162,6 +165,12 @@ func (s *Server) spaHandler() http.Handler {
 		// Redirect /api/* misses to JSON 404 (defensive).
 		if strings.HasPrefix(r.URL.Path, "/api/") {
 			http.NotFound(w, r)
+			return
+		}
+		// HTML shells get per-page meta tags (Open Graph / Twitter cards)
+		// injected so link previews show the article, not the generic shell.
+		if htmlPath, ok := s.spaHTMLFor(r.URL.Path); ok {
+			s.serveHTMLWithMeta(w, r, htmlPath)
 			return
 		}
 		// Try the file as-is.

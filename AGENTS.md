@@ -50,6 +50,16 @@ A change is not complete until ALL of these are true:
 - [ ] Add or update a markdown file under `content/docs/02-guides/` for
   user-facing features.
 
+### Machine-readable surfaces (before build or commit)
+- [ ] Docs, blog, or site config changed → regenerate the repo-root
+  `llms.txt` with `go run . llms -o llms.txt` (or `make llms`). It uses
+  the same code path as the live `/llms.txt` endpoint — never hand-edit
+  it, and never let a content change ship without it.
+- [ ] Any `/api/*` route or response shape changed → update
+  `static/openapi.yaml`, the built-in spec served at `/api/openapi-spec`
+  and rendered by the `/rest-api-spec` explorer. Every public route must
+  be listed, `/llms.txt` included.
+
 ### Infra
 - [ ] `Dockerfile` still produces a working multi-arch image.
 - [ ] `.github/workflows/docker.yml` still passes.
@@ -69,6 +79,7 @@ A change is not complete until ALL of these are true:
 make build       # produce ./templrpress
 make dev         # go run . serve -f config.example.yaml
 make docker      # build local image
+make llms        # regenerate repo-root llms.txt from config + content
 go vet ./...     # CI runs this
 ```
 
