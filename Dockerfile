@@ -1,7 +1,10 @@
 # syntax=docker/dockerfile:1.7
 
 # ---- SPA build stage -----------------------------------------------------
-FROM node:20-alpine AS spa-builder
+# Runs on the build host's native platform: the static export is
+# platform-independent, and emulating Node under QEMU is slow and crashes
+# with SIGILL during Next.js page generation.
+FROM --platform=$BUILDPLATFORM node:20-alpine AS spa-builder
 WORKDIR /spa
 COPY templrpress-nextjs/package.json templrpress-nextjs/package-lock.json* ./
 RUN npm ci --no-audit --no-fund
@@ -9,7 +12,8 @@ COPY templrpress-nextjs/ ./
 RUN npm run build
 
 # ---- Go build stage ------------------------------------------------------
-FROM golang:1.22-alpine AS builder
+# Also native: Go cross-compiles to TARGETOS/TARGETARCH below.
+FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
 WORKDIR /src
 
 RUN apk add --no-cache git
