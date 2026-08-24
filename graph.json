@@ -8392,8 +8392,8 @@
   ],
   "metadata": {
     "generator": "scripts/graphify-build.py (AST-only)",
-    "generated_at": "2026-08-17T06:15:27Z",
-    "source_sha": "839ea5e0bf5b9fa58b41f62fabd34a704a786c17",
+    "generated_at": "2026-08-24T06:18:09Z",
+    "source_sha": "fececce00d129927fceaba74ab9fc669e3387619",
     "source_ref": "refs/heads/main",
     "node_count": 310,
     "edge_count": 685
