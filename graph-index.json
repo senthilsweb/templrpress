@@ -4,29 +4,6 @@
   "edge_count": 685,
   "module_count": 11,
   "modules": {
-    "internal/cms": {
-      "entry_files": [
-        "cms.go"
-      ],
-      "labels": [
-        "cms.go",
-        "Article",
-        "frontmatterRaw",
-        "Source",
-        "Loader",
-        "New()"
-      ],
-      "calls": [],
-      "called_by": [
-        "internal/server",
-        "templrpress-nextjs/src/lib",
-        "cmd/root.go",
-        "templrpress-nextjs/src/components",
-        "templrpress-nextjs/src/app",
-        "scripts/graphify-build.py",
-        "scripts/graphify-index.py"
-      ]
-    },
     "internal/server": {
       "entry_files": [
         "api.go",
@@ -35,67 +12,22 @@
         "server.go"
       ],
       "labels": [
-        "pdf.go",
-        "registerPDFFonts()",
-        "softBreakTextRenderer",
-        ".RegisterFuncs()",
+        "meta.go",
+        "pageMeta",
         "Server",
-        ".handleCMSPDF()"
+        ".blogFolder()",
+        ".baseURL()",
+        "absolutize()"
       ],
       "calls": [
         "internal/cms",
+        "templrpress-nextjs/src/lib",
         "templrpress-nextjs/src/app",
         "internal/config"
       ],
       "called_by": [
         "cmd/root.go"
       ]
-    },
-    "cmd/root.go": {
-      "entry_files": [
-        "root.go"
-      ],
-      "labels": [
-        "root.go",
-        "Execute()",
-        "printHelp()",
-        "runServe()",
-        "runLLMs()",
-        "runInit()"
-      ],
-      "calls": [
-        "internal/config",
-        "internal/cms",
-        "internal/banner",
-        "internal/server"
-      ],
-      "called_by": []
-    },
-    "templrpress-nextjs/src/components": {
-      "entry_files": [
-        "api-tester.tsx",
-        "app-shell.tsx",
-        "arch-diagram.tsx",
-        "article-header.tsx",
-        "article-renderer.tsx",
-        "badge.tsx"
-      ],
-      "labels": [
-        "cn()",
-        "normalizeIcon()",
-        "normalizeConfig()",
-        "article-renderer.tsx",
-        "extractCodeText()",
-        "extractToc()"
-      ],
-      "calls": [
-        "templrpress-nextjs/src/providers",
-        "templrpress-nextjs/src/lib",
-        "internal/config",
-        "internal/cms",
-        "templrpress-nextjs/src/app"
-      ],
-      "called_by": []
     },
     "templrpress-nextjs/src/lib": {
       "entry_files": [
@@ -115,10 +47,111 @@
         "isOverlayActive()"
       ],
       "calls": [
-        "internal/cms",
-        "templrpress-nextjs/src/app"
+        "templrpress-nextjs/src/components"
       ],
       "called_by": [
+        "internal/server",
+        "templrpress-nextjs/src/components",
+        "templrpress-nextjs/src/app",
+        "scripts/graphify-index.py",
+        "scripts/graphify-build.py"
+      ]
+    },
+    "cmd/root.go": {
+      "entry_files": [
+        "root.go"
+      ],
+      "labels": [
+        "root.go",
+        "Execute()",
+        "printHelp()",
+        "runServe()",
+        "runLLMs()",
+        "runInit()"
+      ],
+      "calls": [
+        "internal/server",
+        "internal/config",
+        "internal/banner"
+      ],
+      "called_by": []
+    },
+    "internal/cms": {
+      "entry_files": [
+        "cms.go"
+      ],
+      "labels": [
+        "cms.go",
+        "Article",
+        "frontmatterRaw",
+        "Source",
+        "Loader",
+        "New()"
+      ],
+      "calls": [],
+      "called_by": [
+        "internal/server"
+      ]
+    },
+    "templrpress-nextjs/src/components": {
+      "entry_files": [
+        "api-tester.tsx",
+        "app-shell.tsx",
+        "arch-diagram.tsx",
+        "article-header.tsx",
+        "article-renderer.tsx",
+        "badge.tsx"
+      ],
+      "labels": [
+        "cn()",
+        "normalizeIcon()",
+        "normalizeConfig()",
+        "spec-settings-sheet.tsx",
+        "updateHeader()",
+        "addHeader()"
+      ],
+      "calls": [
+        "templrpress-nextjs/src/lib",
+        "templrpress-nextjs/src/providers",
+        "internal/config"
+      ],
+      "called_by": [
+        "templrpress-nextjs/src/lib"
+      ]
+    },
+    "internal/banner": {
+      "entry_files": [
+        "banner.go"
+      ],
+      "labels": [
+        "banner.go",
+        "Print()",
+        "printRow()",
+        "collectFeatureFlags()"
+      ],
+      "calls": [],
+      "called_by": [
+        "cmd/root.go",
+        "scripts/graphify-index.py",
+        "scripts/graphify-build.py"
+      ]
+    },
+    "internal/config": {
+      "entry_files": [
+        "config.go"
+      ],
+      "labels": [
+        "config.go",
+        "Config",
+        "OpenAPISpecEntry",
+        "SiteConfig",
+        "ServerConfig",
+        "BrandingConfig"
+      ],
+      "calls": [],
+      "called_by": [
+        "cmd/root.go",
+        "internal/server",
         "templrpress-nextjs/src/components"
       ]
     },
@@ -138,47 +171,9 @@
         "RootLayout()"
       ],
       "calls": [
-        "internal/cms"
-      ],
-      "called_by": [
-        "internal/server",
-        "templrpress-nextjs/src/components",
         "templrpress-nextjs/src/lib"
-      ]
-    },
-    "internal/banner": {
-      "entry_files": [
-        "banner.go"
       ],
-      "labels": [
-        "banner.go",
-        "Print()",
-        "printRow()",
-        "collectFeatureFlags()"
-      ],
-      "calls": [],
       "called_by": [
-        "scripts/graphify-index.py",
-        "cmd/root.go",
-        "scripts/graphify-build.py"
-      ]
-    },
-    "internal/config": {
-      "entry_files": [
-        "config.go"
-      ],
-      "labels": [
-        "config.go",
-        "Config",
-        "OpenAPISpecEntry",
-        "SiteConfig",
-        "ServerConfig",
-        "BrandingConfig"
-      ],
-      "calls": [],
-      "called_by": [
-        "cmd/root.go",
-        "templrpress-nextjs/src/components",
         "internal/server"
       ]
     },
@@ -195,7 +190,7 @@
       ],
       "calls": [
         "internal/banner",
-        "internal/cms"
+        "templrpress-nextjs/src/lib"
       ],
       "called_by": []
     },
@@ -206,12 +201,12 @@
         "theme-provider.tsx"
       ],
       "labels": [
-        "theme-provider.tsx",
-        "ThemeProvider()",
-        "useTheme()",
         "config-provider.tsx",
         "ConfigProvider()",
-        "useConfig()"
+        "useConfig()",
+        "providers.tsx",
+        "Providers()",
+        "theme-provider.tsx"
       ],
       "calls": [],
       "called_by": [
@@ -228,7 +223,7 @@
       ],
       "calls": [
         "internal/banner",
-        "internal/cms"
+        "templrpress-nextjs/src/lib"
       ],
       "called_by": []
     }
