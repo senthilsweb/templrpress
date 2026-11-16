@@ -12,12 +12,12 @@
         "server.go"
       ],
       "labels": [
-        "meta.go",
-        "pageMeta",
+        "server.go",
+        "Assets",
         "Server",
-        ".blogFolder()",
-        ".baseURL()",
-        "absolutize()"
+        "New()",
+        "buildLoader()",
+        "emptyFS"
       ],
       "calls": [
         "internal/cms",
@@ -39,12 +39,12 @@
         "utils.ts"
       ],
       "labels": [
-        "openapi-overlay.ts",
-        "safeKey()",
-        "loadOverlay()",
-        "saveOverlay()",
-        "resetOverlay()",
-        "isOverlayActive()"
+        "event-bus.ts",
+        "EventBus",
+        ".on()",
+        ".off()",
+        ".emit()",
+        "openapi-overlay.ts"
       ],
       "calls": [
         "templrpress-nextjs/src/components"
@@ -52,9 +52,26 @@
       "called_by": [
         "internal/server",
         "templrpress-nextjs/src/components",
-        "templrpress-nextjs/src/app",
+        "scripts/graphify-build.py",
         "scripts/graphify-index.py",
-        "scripts/graphify-build.py"
+        "templrpress-nextjs/src/app"
+      ]
+    },
+    "internal/cms": {
+      "entry_files": [
+        "cms.go"
+      ],
+      "labels": [
+        "cms.go",
+        "Article",
+        "frontmatterRaw",
+        "Source",
+        "Loader",
+        "New()"
+      ],
+      "calls": [],
+      "called_by": [
+        "internal/server"
       ]
     },
     "cmd/root.go": {
@@ -76,23 +93,6 @@
       ],
       "called_by": []
     },
-    "internal/cms": {
-      "entry_files": [
-        "cms.go"
-      ],
-      "labels": [
-        "cms.go",
-        "Article",
-        "frontmatterRaw",
-        "Source",
-        "Loader",
-        "New()"
-      ],
-      "calls": [],
-      "called_by": [
-        "internal/server"
-      ]
-    },
     "templrpress-nextjs/src/components": {
       "entry_files": [
         "api-tester.tsx",
@@ -106,9 +106,9 @@
         "cn()",
         "normalizeIcon()",
         "normalizeConfig()",
-        "spec-settings-sheet.tsx",
-        "updateHeader()",
-        "addHeader()"
+        "snapshot-code-block.tsx",
+        "MacOSDots()",
+        "WindowsTitleBar()"
       ],
       "calls": [
         "templrpress-nextjs/src/lib",
@@ -155,28 +155,6 @@
         "templrpress-nextjs/src/components"
       ]
     },
-    "templrpress-nextjs/src/app": {
-      "entry_files": [
-        "error.tsx",
-        "layout.tsx",
-        "not-found.tsx",
-        "page.tsx"
-      ],
-      "labels": [
-        "page.tsx",
-        "copy()",
-        "error.tsx",
-        "GlobalError()",
-        "layout.tsx",
-        "RootLayout()"
-      ],
-      "calls": [
-        "templrpress-nextjs/src/lib"
-      ],
-      "called_by": [
-        "internal/server"
-      ]
-    },
     "scripts/graphify-index.py": {
       "entry_files": [
         "graphify-index.py"
@@ -194,23 +172,26 @@
       ],
       "called_by": []
     },
-    "templrpress-nextjs/src/providers": {
+    "templrpress-nextjs/src/app": {
       "entry_files": [
-        "config-provider.tsx",
-        "providers.tsx",
-        "theme-provider.tsx"
+        "error.tsx",
+        "layout.tsx",
+        "not-found.tsx",
+        "page.tsx"
       ],
       "labels": [
-        "config-provider.tsx",
-        "ConfigProvider()",
-        "useConfig()",
-        "providers.tsx",
-        "Providers()",
-        "theme-provider.tsx"
+        "page.tsx",
+        "not-found.tsx",
+        "NotFound()",
+        "error.tsx",
+        "GlobalError()",
+        "copy()"
       ],
-      "calls": [],
+      "calls": [
+        "templrpress-nextjs/src/lib"
+      ],
       "called_by": [
-        "templrpress-nextjs/src/components"
+        "internal/server"
       ]
     },
     "scripts/graphify-build.py": {
@@ -226,6 +207,25 @@
         "templrpress-nextjs/src/lib"
       ],
       "called_by": []
+    },
+    "templrpress-nextjs/src/providers": {
+      "entry_files": [
+        "config-provider.tsx",
+        "providers.tsx",
+        "theme-provider.tsx"
+      ],
+      "labels": [
+        "theme-provider.tsx",
+        "ThemeProvider()",
+        "useTheme()",
+        "providers.tsx",
+        "Providers()",
+        "config-provider.tsx"
+      ],
+      "calls": [],
+      "called_by": [
+        "templrpress-nextjs/src/components"
+      ]
     }
   }
 }
