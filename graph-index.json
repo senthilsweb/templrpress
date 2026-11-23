@@ -4,6 +4,29 @@
   "edge_count": 685,
   "module_count": 11,
   "modules": {
+    "internal/cms": {
+      "entry_files": [
+        "cms.go"
+      ],
+      "labels": [
+        "cms.go",
+        "Article",
+        "frontmatterRaw",
+        "Source",
+        "Loader",
+        "New()"
+      ],
+      "calls": [],
+      "called_by": [
+        "internal/server",
+        "templrpress-nextjs/src/lib",
+        "cmd/root.go",
+        "templrpress-nextjs/src/components",
+        "templrpress-nextjs/src/app",
+        "scripts/graphify-index.py",
+        "scripts/graphify-build.py"
+      ]
+    },
     "internal/server": {
       "entry_files": [
         "api.go",
@@ -21,57 +44,11 @@
       ],
       "calls": [
         "internal/cms",
-        "templrpress-nextjs/src/lib",
         "templrpress-nextjs/src/app",
         "internal/config"
       ],
       "called_by": [
         "cmd/root.go"
-      ]
-    },
-    "templrpress-nextjs/src/lib": {
-      "entry_files": [
-        "api.ts",
-        "config.ts",
-        "event-bus.ts",
-        "export-csv.ts",
-        "openapi-overlay.ts",
-        "utils.ts"
-      ],
-      "labels": [
-        "event-bus.ts",
-        "EventBus",
-        ".on()",
-        ".off()",
-        ".emit()",
-        "openapi-overlay.ts"
-      ],
-      "calls": [
-        "templrpress-nextjs/src/components"
-      ],
-      "called_by": [
-        "internal/server",
-        "templrpress-nextjs/src/components",
-        "scripts/graphify-build.py",
-        "scripts/graphify-index.py",
-        "templrpress-nextjs/src/app"
-      ]
-    },
-    "internal/cms": {
-      "entry_files": [
-        "cms.go"
-      ],
-      "labels": [
-        "cms.go",
-        "Article",
-        "frontmatterRaw",
-        "Source",
-        "Loader",
-        "New()"
-      ],
-      "calls": [],
-      "called_by": [
-        "internal/server"
       ]
     },
     "cmd/root.go": {
@@ -87,9 +64,10 @@
         "runInit()"
       ],
       "calls": [
-        "internal/server",
         "internal/config",
-        "internal/banner"
+        "internal/cms",
+        "internal/banner",
+        "internal/server"
       ],
       "called_by": []
     },
@@ -106,17 +84,66 @@
         "cn()",
         "normalizeIcon()",
         "normalizeConfig()",
-        "snapshot-code-block.tsx",
-        "MacOSDots()",
-        "WindowsTitleBar()"
+        "hero-orbit.tsx",
+        "posOnCircle()",
+        "navbar.tsx"
       ],
       "calls": [
-        "templrpress-nextjs/src/lib",
         "templrpress-nextjs/src/providers",
+        "templrpress-nextjs/src/lib",
+        "templrpress-nextjs/src/app",
+        "internal/cms",
         "internal/config"
       ],
+      "called_by": []
+    },
+    "templrpress-nextjs/src/lib": {
+      "entry_files": [
+        "api.ts",
+        "config.ts",
+        "event-bus.ts",
+        "export-csv.ts",
+        "openapi-overlay.ts",
+        "utils.ts"
+      ],
+      "labels": [
+        "api.ts",
+        "getBaseUrl()",
+        "ApiClient",
+        ".constructor()",
+        ".buildUrl()",
+        ".get()"
+      ],
+      "calls": [
+        "internal/cms",
+        "templrpress-nextjs/src/app"
+      ],
       "called_by": [
-        "templrpress-nextjs/src/lib"
+        "templrpress-nextjs/src/components"
+      ]
+    },
+    "templrpress-nextjs/src/app": {
+      "entry_files": [
+        "error.tsx",
+        "layout.tsx",
+        "not-found.tsx",
+        "page.tsx"
+      ],
+      "labels": [
+        "page.tsx",
+        "not-found.tsx",
+        "NotFound()",
+        "copy()",
+        "error.tsx",
+        "GlobalError()"
+      ],
+      "calls": [
+        "internal/cms"
+      ],
+      "called_by": [
+        "internal/server",
+        "templrpress-nextjs/src/lib",
+        "templrpress-nextjs/src/components"
       ]
     },
     "internal/banner": {
@@ -151,8 +178,8 @@
       "calls": [],
       "called_by": [
         "cmd/root.go",
-        "internal/server",
-        "templrpress-nextjs/src/components"
+        "templrpress-nextjs/src/components",
+        "internal/server"
       ]
     },
     "scripts/graphify-index.py": {
@@ -168,43 +195,7 @@
       ],
       "calls": [
         "internal/banner",
-        "templrpress-nextjs/src/lib"
-      ],
-      "called_by": []
-    },
-    "templrpress-nextjs/src/app": {
-      "entry_files": [
-        "error.tsx",
-        "layout.tsx",
-        "not-found.tsx",
-        "page.tsx"
-      ],
-      "labels": [
-        "page.tsx",
-        "not-found.tsx",
-        "NotFound()",
-        "error.tsx",
-        "GlobalError()",
-        "copy()"
-      ],
-      "calls": [
-        "templrpress-nextjs/src/lib"
-      ],
-      "called_by": [
-        "internal/server"
-      ]
-    },
-    "scripts/graphify-build.py": {
-      "entry_files": [
-        "graphify-build.py"
-      ],
-      "labels": [
-        "graphify-build.py",
-        "main()"
-      ],
-      "calls": [
-        "internal/banner",
-        "templrpress-nextjs/src/lib"
+        "internal/cms"
       ],
       "called_by": []
     },
@@ -226,6 +217,20 @@
       "called_by": [
         "templrpress-nextjs/src/components"
       ]
+    },
+    "scripts/graphify-build.py": {
+      "entry_files": [
+        "graphify-build.py"
+      ],
+      "labels": [
+        "graphify-build.py",
+        "main()"
+      ],
+      "calls": [
+        "internal/banner",
+        "internal/cms"
+      ],
+      "called_by": []
     }
   }
 }
